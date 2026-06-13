@@ -20,39 +20,36 @@ export default function WordBlock({ block, color, onClick, disabled }: WordBlock
       onClick={onClick}
       disabled={disabled || isMatched}
       className={`
-        relative w-full aspect-[3/2] rounded-2xl font-bold
-        flex flex-col items-center justify-center text-center px-2 gap-0.5
+        relative w-full rounded-xl font-semibold
+        flex items-center justify-center text-center
         transition-all duration-200
         min-w-[44px] min-h-[44px]
         ${isMatched ? 'scale-0 opacity-0 pointer-events-none' : ''}
         ${isSelected
-          ? 'scale-105 z-10 -translate-y-1 shadow-xl ring-2'
-          : 'shadow-sm hover:shadow-md hover:-translate-y-0.5'
+          ? 'scale-105 z-10 shadow-xl ring-2 -translate-y-0.5'
+          : 'shadow-sm hover:shadow hover:-translate-y-px'
         }
         ${isWrong ? 'animate-shake ring-2 ring-danger-500' : ''}
-        ${isSelected ? '' : isEnglish ? 'bg-gradient-to-b from-white to-blue-50/30' : 'bg-gradient-to-b from-white to-orange-50/30'}
       `}
       style={{
-        borderColor: isSelected ? color : isEnglish ? `${color}60` : `${color}30`,
-        borderWidth: isSelected ? '2.5px' : '1.5px',
-        backgroundColor: isSelected ? color : undefined,
+        backgroundColor: isSelected
+          ? color
+          : isEnglish ? '#EDF4FC' : '#FFF8F0',
+        borderColor: isSelected
+          ? color
+          : isEnglish ? `${color}35` : `${color}18`,
+        borderWidth: isSelected ? '2px' : '1px',
         color: isSelected ? '#FFFFFF' : '#1A1A2E',
-        boxShadow: isSelected ? `0 8px 24px ${color}40` : undefined,
-        ...(isSelected ? {} : {}),
+        boxShadow: isSelected ? `0 4px 16px ${color}40` : undefined,
       }}
     >
-      {/* Type ribbon */}
+      {/* Tiny type dot on top-right corner */}
       <span
-        className={`
-          absolute -top-0.5 -right-0.5 px-1.5 py-0.5 rounded-bl-lg rounded-tr-xl text-[10px] font-semibold
-          ${isSelected ? 'bg-white/20 text-white/90' : isEnglish ? 'bg-primary-100 text-primary-600' : 'bg-warning-100 text-warning-600'}
-        `}
-      >
-        {isEnglish ? 'EN' : '中'}
-      </span>
+        className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full"
+        style={{ backgroundColor: isSelected ? 'rgba(255,255,255,0.6)' : isEnglish ? `${color}60` : `${color}30` }}
+      />
 
-      {/* Main text */}
-      <span className={`leading-tight ${isSelected ? 'text-base' : 'text-sm sm:text-base'}`}>
+      <span className="text-[13px] leading-tight px-0.5 line-clamp-2">
         {block.text}
       </span>
     </button>

@@ -77,7 +77,7 @@ export default function GameLayout() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface-page">
+    <div className="h-screen flex flex-col bg-surface-page overflow-hidden">
       {/* Countdown overlay — highest z-index, covers everything */}
       {status === 'countdown' && (
         <Countdown from={countdownValue} onFinish={finishCountdown} />

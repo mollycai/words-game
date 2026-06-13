@@ -13,7 +13,7 @@ interface PlayerTimerProps {
 export default function PlayerTimer({ name, color, elapsed, finished, quit }: PlayerTimerProps) {
   return (
     <div
-      className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl mx-2 mt-2 shadow-sm"
+      className="flex items-center gap-2 px-3 py-1.5 rounded-xl mx-2 mt-1.5 shadow-sm flex-shrink-0"
       style={{
         background: `linear-gradient(135deg, ${color}12, ${color}08)`,
         border: `1px solid ${color}30`,
