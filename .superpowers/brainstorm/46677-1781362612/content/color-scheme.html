@@ -1,0 +1,123 @@
+<h2>配色方案设计 — 清新教育风</h2>
+<p class="subtitle">基于 Tailwind CSS，定义一套语义化 Design Token</p>
+
+<div class="section">
+  <h3>完整色板 &amp; 语义映射</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:12px;">
+
+    <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:48px;height:48px;border-radius:12px;background:#4A90D9;"></div>
+        <div><strong>Primary</strong><br/><code style="font-size:12px;">#4A90D9</code></div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <div style="width:28px;height:28px;border-radius:6px;background:#3A7BC8;" title="700"></div>
+        <div style="width:28px;height:28px;border-radius:6px;background:#4A90D9;" title="500"></div>
+        <div style="width:28px;height:28px;border-radius:6px;background:#6BA5E3;" title="300"></div>
+        <div style="width:28px;height:28px;border-radius:6px;background:#D6E8FA;" title="100"></div>
+      </div>
+      <p style="font-size:12px;color:#6b7280;margin:8px 0 0;">按钮、链接、选中态、品牌色</p>
+    </div>
+
+    <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:48px;height:48px;border-radius:12px;background:#34C759;"></div>
+        <div><strong>Success</strong><br/><code style="font-size:12px;">#34C759</code></div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <div style="width:28px;height:28px;border-radius:6px;background:#2DB84D;" title="700"></div>
+        <div style="width:28px;height:28px;border-radius:6px;background:#34C759;" title="500"></div>
+        <div style="width:28px;height:28px;border-radius:6px;background:#6DD98A;" title="300"></div>
+        <div style="width:28px;height:28px;border-radius:6px;background:#D4F5DD;" title="100"></div>
+      </div>
+      <p style="font-size:12px;color:#6b7280;margin:8px 0 0;">消除成功、完成状态、排名高亮</p>
+    </div>
+
+    <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:48px;height:48px;border-radius:12px;background:#FF3B30;"></div>
+        <div><strong>Danger</strong><br/><code style="font-size:12px;">#FF3B30</code></div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <div style="width:28px;height:28px;border-radius:6px;background:#E0352B;" title="700"></div>
+        <div style="width:28px;height:28px;border-radius:6px;background:#FF3B30;" title="500"></div>
+        <div style="width:28px;height:28px;border-radius:6px;background:#FF6B63;" title="300"></div>
+        <div style="width:28px;height:28px;border-radius:6px;background:#FFD6D4;" title="100"></div>
+      </div>
+      <p style="font-size:12px;color:#6b7280;margin:8px 0 0;">匹配失败、弃权、错误提示</p>
+    </div>
+
+    <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:48px;height:48px;border-radius:12px;background:#FF9500;"></div>
+        <div><strong>Warning</strong><br/><code style="font-size:12px;">#FF9500</code></div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <div style="width:28px;height:28px;border-radius:6px;background:#E08500;" title="700"></div>
+        <div style="width:28px;height:28px;border-radius:6px;background:#FF9500;" title="500"></div>
+        <div style="width:28px;height:28px;border-radius:6px;background:#FFB84D;" title="300"></div>
+        <div style="width:28px;height:28px;border-radius:6px;background:#FFEACC;" title="100"></div>
+      </div>
+      <p style="font-size:12px;color:#6b7280;margin:8px 0 0;">倒计时、暂停状态、确认对话框</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>选手标识色 &amp; 中性色</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;">
+      <h4 style="margin:0 0 8px;">选手颜色</h4>
+      <div style="display:flex;gap:8px;align-items:center;margin:4px 0;">
+        <div style="width:24px;height:24px;border-radius:50%;background:#4A90D9;"></div>
+        <span style="font-size:13px;">选手1 · Blue <code>#4A90D9</code></span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin:4px 0;">
+        <div style="width:24px;height:24px;border-radius:50%;background:#FF9500;"></div>
+        <span style="font-size:13px;">选手2 · Orange <code>#FF9500</code></span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin:4px 0;">
+        <div style="width:24px;height:24px;border-radius:50%;background:#34C759;"></div>
+        <span style="font-size:13px;">选手3 · Green <code>#34C759</code></span>
+      </div>
+    </div>
+    <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;">
+      <h4 style="margin:0 0 8px;">中性色</h4>
+      <div style="display:flex;gap:4px;align-items:center;margin:4px 0;">
+        <div style="width:24px;height:24px;border-radius:4px;background:#F8F9FA;border:1px solid #e5e7eb;"></div>
+        <span style="font-size:13px;">bg-page <code>#F8F9FA</code></span>
+      </div>
+      <div style="display:flex;gap:4px;align-items:center;margin:4px 0;">
+        <div style="width:24px;height:24px;border-radius:4px;background:#FFFFFF;border:1px solid #e5e7eb;"></div>
+        <span style="font-size:13px;">bg-card <code>#FFFFFF</code></span>
+      </div>
+      <div style="display:flex;gap:4px;align-items:center;margin:4px 0;">
+        <div style="width:24px;height:24px;border-radius:4px;background:#1A1A2E;"></div>
+        <span style="font-size:13px;">text-main <code>#1A1A2E</code></span>
+      </div>
+      <div style="display:flex;gap:4px;align-items:center;margin:4px 0;">
+        <div style="width:24px;height:24px;border-radius:4px;background:#6B7280;"></div>
+        <span style="font-size:13px;">text-muted <code>#6B7280</code></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Tailwind Config 映射</h3>
+  <div class="mockup">
+    <div class="mockup-header">tailwind.config.ts 自定义颜色</div>
+    <div class="mockup-body">
+      <pre style="font-size:12px;line-height:1.5;margin:0;">colors: {
+  primary:   { 100:'#D6E8FA', 300:'#6BA5E3', 500:'#4A90D9', 700:'#3A7BC8' },
+  success:   { 100:'#D4F5DD', 300:'#6DD98A', 500:'#34C759', 700:'#2DB84D' },
+  danger:    { 100:'#FFD6D4', 300:'#FF6B63', 500:'#FF3B30', 700:'#E0352B' },
+  warning:   { 100:'#FFEACC', 300:'#FFB84D', 500:'#FF9500', 700:'#E08500' },
+  player:    { 1:'#4A90D9', 2:'#FF9500', 3:'#34C759' },
+  surface:   { page:'#F8F9FA', card:'#FFFFFF' },
+  text:      { main:'#1A1A2E', muted:'#6B7280' },
+}</pre>
+    </div>
+  </div>
+</div>

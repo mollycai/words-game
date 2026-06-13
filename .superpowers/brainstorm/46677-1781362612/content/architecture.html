@@ -1,0 +1,116 @@
+<h2>整体架构设计</h2>
+<p class="subtitle">Next.js App Router + Zustand + Tailwind CSS</p>
+
+<div class="section">
+  <h3>页面路由（App Router）</h3>
+  <div class="mockup">
+    <div class="mockup-header">Route Structure</div>
+    <div class="mockup-body">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">
+        <tr style="border-bottom:1px solid #e5e7eb;">
+          <td style="padding:8px 12px;font-weight:600;">/</td>
+          <td style="padding:8px 12px;">开始界面</td>
+          <td style="padding:8px 12px;color:#6b7280;">StartPage</td>
+        </tr>
+        <tr style="border-bottom:1px solid #e5e7eb;">
+          <td style="padding:8px 12px;font-weight:600;">/setup</td>
+          <td style="padding:8px 12px;">比赛设置</td>
+          <td style="padding:8px 12px;color:#6b7280;">SetupPage</td>
+        </tr>
+        <tr style="border-bottom:1px solid #e5e7eb;">
+          <td style="padding:8px 12px;font-weight:600;">/game</td>
+          <td style="padding:8px 12px;">比赛进行中</td>
+          <td style="padding:8px 12px;color:#6b7280;">GamePage</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 12px;font-weight:600;">/result</td>
+          <td style="padding:8px 12px;">排名结果</td>
+          <td style="padding:8px 12px;color:#6b7280;">ResultPage</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>组件树</h3>
+  <div class="mockup">
+    <div class="mockup-header">Component Tree</div>
+    <div class="mockup-body">
+      <pre style="font-size:12px;line-height:1.6;margin:0;color:#374151;">
+src/
+├── app/
+│   ├── layout.tsx          # 根布局 (字体/全局样式)
+│   ├── page.tsx            # 开始界面
+│   ├── setup/page.tsx      # 设置界面
+│   ├── game/page.tsx       # 比赛界面
+│   ├── result/page.tsx     # 结果界面
+│   └── api/
+│       └── words/
+│           ├── route.ts    # POST 解析 Excel
+│           └── route.ts    # GET  获取单词列表 (脚手架)
+│
+├── components/
+│   ├── ui/                 # 通用 UI 组件
+│   │   ├── Button.tsx
+│   │   ├── Modal.tsx
+│   │   └── Countdown.tsx
+│   ├── game/               # 比赛相关组件
+│   │   ├── GameLayout.tsx        # 多人布局容器
+│   │   ├── PlayerArea.tsx        # 单个选手答题区
+│   │   ├── WordBlock.tsx         # 单词卡片块
+│   │   ├── BlockGrid.tsx         # 块网格排列
+│   │   ├── PlayerTimer.tsx       # 选手计时器
+│   │   └── RefereeToolbar.tsx    # 裁判工具栏
+│   ├── setup/              # 设置相关组件
+│   │   ├── PlayerCountSelector.tsx
+│   │   ├── WordCountInput.tsx
+│   │   └── ExcelUploader.tsx
+│   └── result/             # 结果相关组件
+│       ├── RankCard.tsx
+│       └── Podium.tsx
+│
+├── stores/
+│   ├── gameStore.ts        # 比赛核心状态 (Zustand)
+│   └── setupStore.ts       # 设置状态 (Zustand)
+│
+├── lib/
+│   ├── wordParser.ts       # Excel 解析逻辑
+│   ├── gameLogic.ts        # 抽词/打乱/匹配判断
+│   └── storage.ts          # localStorage/IndexedDB 工具
+│
+└── types/
+    └── index.ts            # WordPair, Block, Player 等类型
+</pre>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>数据流</h3>
+  <div class="mockup">
+    <div class="mockup-header">Data Flow</div>
+    <div class="mockup-body">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;line-height:1.8;">
+        <div style="background:#e8f0fe;border:1px solid #4A90D9;border-radius:8px;padding:12px;">
+          <strong>setupStore</strong><br/>
+          playerCount<br/>wordCount<br/>wordPairs[]
+        </div>
+        <span style="font-size:20px;">→</span>
+        <div style="background:#e8f0fe;border:1px solid #4A90D9;border-radius:8px;padding:12px;">
+          <strong>gameStore</strong><br/>
+          players[]<br/>gameStatus<br/>isPaused
+        </div>
+        <span style="font-size:20px;">→</span>
+        <div style="background:#fef3e2;border:1px solid #FF9500;border-radius:8px;padding:12px;">
+          <strong>每个 Player</strong><br/>
+          blocks[]<br/>time<br/>finished<br/>quit
+        </div>
+      </div>
+      <p style="margin-top:16px;font-size:13px;color:#6b7280;">
+        setupStore → gameStore 初始化时传入设置参数<br/>
+        gameStore 管理每个选手独立状态和全局比赛生命周期
+      </p>
+    </div>
+  </div>
+</div>

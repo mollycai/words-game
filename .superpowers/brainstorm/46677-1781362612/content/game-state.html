@@ -1,0 +1,103 @@
+<h2>比赛状态机 &amp; 存储策略</h2>
+<p class="subtitle">确保比赛流程确定性，避免状态混乱</p>
+
+<div class="section">
+  <h3>比赛生命周期状态机</h3>
+  <div class="mockup">
+    <div class="mockup-header">Game Status State Machine</div>
+    <div class="mockup-body">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;line-height:1.6;">
+        <div style="background:#e8f0fe;border:2px solid #4A90D9;border-radius:10px;padding:10px 14px;text-align:center;">
+          <strong>idle</strong><br/><span style="font-size:11px;color:#6b7280;">初始/设置页</span>
+        </div>
+        <span style="font-size:18px;">→</span>
+        <div style="background:#fff3e0;border:2px solid #FF9500;border-radius:10px;padding:10px 14px;text-align:center;">
+          <strong>countdown</strong><br/><span style="font-size:11px;color:#6b7280;">3-2-1-GO!</span>
+        </div>
+        <span style="font-size:18px;">→</span>
+        <div style="background:#e8f5e9;border:2px solid #34C759;border-radius:10px;padding:10px 14px;text-align:center;">
+          <strong>playing</strong><br/><span style="font-size:11px;color:#6b7280;">选手操作中</span>
+        </div>
+        <span style="font-size:18px;">→</span>
+        <div style="background:#f3e5f5;border:2px solid #9c27b0;border-radius:10px;padding:10px 14px;text-align:center;">
+          <strong>finished</strong><br/><span style="font-size:11px;color:#6b7280;">跳转结果页</span>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;font-size:12px;">
+        <span style="background:#fff3e0;color:#E08500;padding:2px 8px;border-radius:4px;">countdown → idle (返回)</span>
+        <span style="background:#e8f5e9;color:#2DB84D;padding:2px 8px;border-radius:4px;">playing ↔ paused (暂停/继续)</span>
+        <span style="background:#ffebee;color:#E0352B;padding:2px 8px;border-radius:4px;">playing → finished (全部完成)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>裁判操作影响矩阵</h3>
+  <div class="mockup">
+    <div class="mockup-body">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <tr style="border-bottom:1px solid #e5e7eb;background:#f9fafb;">
+          <th style="padding:8px 12px;text-align:left;">操作</th>
+          <th style="padding:8px 12px;text-align:left;">计时器</th>
+          <th style="padding:8px 12px;text-align:left;">答题区</th>
+          <th style="padding:8px 12px;text-align:left;">二次确认</th>
+        </tr>
+        <tr style="border-bottom:1px solid #e5e7eb;">
+          <td style="padding:8px 12px;">暂停</td>
+          <td style="padding:8px 12px;">全部暂停</td>
+          <td style="padding:8px 12px;">遮罩覆盖，不可点击</td>
+          <td style="padding:8px 12px;color:#34C759;">不需要</td>
+        </tr>
+        <tr style="border-bottom:1px solid #e5e7eb;">
+          <td style="padding:8px 12px;">继续</td>
+          <td style="padding:8px 12px;">全部恢复</td>
+          <td style="padding:8px 12px;">遮罩移除，恢复交互</td>
+          <td style="padding:8px 12px;color:#34C759;">不需要</td>
+        </tr>
+        <tr style="border-bottom:1px solid #e5e7eb;">
+          <td style="padding:8px 12px;">选手 N 放弃</td>
+          <td style="padding:8px 12px;">该选手停止</td>
+          <td style="padding:8px 12px;">置灰 + "已弃权"标记</td>
+          <td style="padding:8px 12px;color:#FF3B30;">需要</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 12px;">返回</td>
+          <td style="padding:8px 12px;">全部停止</td>
+          <td style="padding:8px 12px;">—</td>
+          <td style="padding:8px 12px;color:#FF3B30;">需要</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>客户端存储策略</h3>
+  <div class="mockup">
+    <div class="mockup-header">localStorage / IndexedDB 分工</div>
+    <div class="mockup-body">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <tr style="border-bottom:1px solid #e5e7eb;background:#f9fafb;">
+          <th style="padding:8px 12px;text-align:left;">存储引擎</th>
+          <th style="padding:8px 12px;text-align:left;">存储内容</th>
+          <th style="padding:8px 12px;text-align:left;">原因</th>
+        </tr>
+        <tr style="border-bottom:1px solid #e5e7eb;">
+          <td style="padding:8px 12px;"><strong>localStorage</strong></td>
+          <td style="padding:8px 12px;">设置偏好（人数、单词数）<br/>最近导入的单词表缓存</td>
+          <td style="padding:8px 12px;">小数据量，同步读取，恢复设置快</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 12px;"><strong>IndexedDB</strong></td>
+          <td style="padding:8px 12px;">单词库（多套单词表）<br/>比赛历史记录（v1.1）</td>
+          <td style="padding:8px 12px;">大数据量，支持索引查询，异步不阻塞 UI<br/>v1 预留接口，实际先走内存</td>
+        </tr>
+      </table>
+      <p style="margin-top:12px;font-size:12px;color:#6b7280;">
+        v1 优先策略：设置页导完 Excel → 解析后存 setupStore (Zustand) → 同时写一份到 localStorage 做持久化缓存。<br/>
+        比赛数据（选手状态/计时/排名）全程在 gameStore 内存中，不落盘。
+      </p>
+    </div>
+  </div>
+</div>
