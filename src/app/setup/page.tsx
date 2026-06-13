@@ -27,15 +27,26 @@ export default function SetupPage() {
     router.push('/game')
   }
 
+  if (!hydrated) {
+    return (
+      <main className="min-h-screen flex flex-col items-center justify-center p-6">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-8 h-8 border-4 border-primary-100 border-t-primary-500 rounded-full animate-spin" />
+          <p className="text-muted text-sm">加载中...</p>
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-6">
-      <div className={`bg-white rounded-3xl shadow-lg p-10 max-w-md w-full space-y-8 transition-opacity duration-200 ${hydrated ? 'opacity-100' : 'opacity-0'}`}>
+      <div className="bg-white rounded-3xl shadow-lg p-10 max-w-md w-full space-y-8 animate-pop-in">
         <h1 className="text-2xl font-bold text-center">⚙️ 比赛设置</h1>
 
         <PlayerCountSelector value={playerCount} onChange={setPlayerCount} />
 
         <ExcelUploader
-          hasExisting={hydrated && wordPairs.length > 0}
+          hasExisting={wordPairs.length > 0}
           existingFileName={sourceFileName}
           existingTotal={wordPairs.length}
           onParsed={setWordPairs}
