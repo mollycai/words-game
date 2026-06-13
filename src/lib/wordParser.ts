@@ -10,6 +10,26 @@ export interface ParseError {
   error: string
 }
 
+const TEMPLATE_HEADER = ['word', 'Meaning']
+const TEMPLATE_SAMPLES = [
+  ['apple', 'n. 苹果'],
+  ['abandon', 'v. 放弃'],
+  ['book', 'n. 书'],
+  ['cat', 'n. 猫'],
+  ['chair', 'n. 椅子'],
+  ['dog', 'n. 狗'],
+]
+
+/** Generate and download an Excel template file for teachers to fill in */
+export function downloadTemplate(): void {
+  const sheet = XLSX.utils.aoa_to_sheet([TEMPLATE_HEADER, ...TEMPLATE_SAMPLES])
+  // Set column widths for readability
+  sheet['!cols'] = [{ wch: 16 }, { wch: 16 }]
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, sheet, '单词表')
+  XLSX.writeFile(wb, '单词表模板.xlsx')
+}
+
 export function parseExcelFile(file: File): Promise<ParseResult> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()

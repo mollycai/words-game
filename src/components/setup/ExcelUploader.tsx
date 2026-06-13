@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState, useEffect } from 'react'
-import { parseExcelFile } from '@/lib/wordParser'
+import { parseExcelFile, downloadTemplate } from '@/lib/wordParser'
 import type { WordPair } from '@/types'
 import type { ParseError } from '@/lib/wordParser'
 
@@ -97,6 +97,16 @@ export default function ExcelUploader({
 
       {!showFile && total > 0 && <p className="text-success-500 text-xs mt-1">✅ 已导入 {total} 个单词</p>}
       {error && <p className="text-danger-500 text-xs mt-1">❌ {error}</p>}
+
+      <p className="text-xs text-muted mt-2">
+        还没有单词表？{' '}
+        <button
+          onClick={downloadTemplate}
+          className="text-primary-500 underline hover:text-primary-700 font-medium"
+        >
+          下载单词表模板
+        </button>
+      </p>
     </div>
   )
 }
