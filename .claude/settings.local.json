@@ -19,7 +19,11 @@
       "Bash(wait)",
       "Bash(node *)",
       "Bash(./node_modules/.bin/tailwindcss *)",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(git -C /Users/edwincai/project/words-game add src/components/result/RankCard.tsx src/components/result/Podium.tsx src/app/result/page.tsx)",
+      "Bash(git -C /Users/edwincai/project/words-game commit -m 'feat: add result page with podium and rank cards *)",
+      "Bash(git -C /Users/edwincai/project/words-game log --oneline -3)",
+      "Bash(pnpm build *)"
     ]
   }
 }

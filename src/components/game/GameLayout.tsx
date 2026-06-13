@@ -31,7 +31,6 @@ export default function GameLayout() {
       return
     }
     initGame(playerCount, wordCount, wordPairs)
-    // Start countdown after a brief moment so the UI renders
     const t = setTimeout(() => startCountdown(), 300)
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,19 +78,21 @@ export default function GameLayout() {
 
   return (
     <div className="min-h-screen flex flex-col bg-surface-page">
-      {/* Countdown overlay */}
+      {/* Countdown overlay — highest z-index, covers everything */}
       {status === 'countdown' && (
         <Countdown from={countdownValue} onFinish={finishCountdown} />
       )}
 
-      {/* Pause overlay */}
+      {/* Pause overlay — below toolbar so resume button is clickable */}
       {status === 'paused' && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40">
-          <span className="text-white text-4xl font-extrabold animate-pop-in">⏸ 已暂停</span>
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 pointer-events-none">
+          <span className="text-white/80 text-5xl font-extrabold tracking-wider drop-shadow-lg">
+            ⏸ 已暂停
+          </span>
         </div>
       )}
 
-      {/* Referee toolbar */}
+      {/* Referee toolbar — z-40 so it stays above pause overlay */}
       <RefereeToolbar
         status={status}
         players={players}
@@ -102,7 +103,7 @@ export default function GameLayout() {
       />
 
       {/* Player areas */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex divide-x divide-gray-200">
         {players.map((player) => (
           <PlayerArea
             key={player.id}

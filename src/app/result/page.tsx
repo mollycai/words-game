@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useGameStore } from '@/stores/gameStore'
 import { rankPlayers } from '@/lib/gameLogic'
@@ -14,13 +14,18 @@ export default function ResultPage() {
   const players = useGameStore((s) => s.players)
   const reset = useGameStore((s) => s.reset)
   const [ranked, setRanked] = useState<PlayerState[]>([])
+  const hasLoaded = useRef(false)
 
   useEffect(() => {
-    if (players.length === 0) {
+    // Only redirect if we never had results (direct access to /result)
+    if (players.length === 0 && !hasLoaded.current) {
       router.replace('/')
       return
     }
-    setRanked(rankPlayers(players))
+    if (players.length > 0) {
+      hasLoaded.current = true
+      setRanked(rankPlayers(players))
+    }
   }, [players, router])
 
   const handlePlayAgain = () => {

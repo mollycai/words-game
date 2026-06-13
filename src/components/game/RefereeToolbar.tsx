@@ -23,11 +23,21 @@ export default function RefereeToolbar({ status, players, onPause, onResume, onQ
 
   return (
     <>
-      <div className="bg-gray-800 text-white px-4 py-2 flex items-center gap-2 flex-wrap rounded-b-xl">
+      <div className="relative z-40 bg-white/90 backdrop-blur border-b border-gray-200 px-4 py-3 flex items-center gap-3 flex-wrap shadow-sm">
+        {/* Game status indicator */}
+        <div className="flex items-center gap-2 mr-2">
+          <div className={`w-2.5 h-2.5 rounded-full ${isPlaying ? 'bg-success-500 animate-pulse' : isPaused ? 'bg-warning-500' : 'bg-gray-300'}`} />
+          <span className="text-sm font-semibold text-text-main">
+            {isPlaying ? '比赛中' : isPaused ? '已暂停' : '准备中'}
+          </span>
+        </div>
+
+        <div className="w-px h-6 bg-gray-200" />
+
         {/* Pause / Resume */}
         {canAct && (
           isPaused
-            ? <Button variant="warning" size="sm" onClick={onResume}>▶ 继续</Button>
+            ? <Button variant="success" size="sm" onClick={onResume}>▶ 继续比赛</Button>
             : <Button variant="warning" size="sm" onClick={onPause}>⏸ 暂停</Button>
         )}
 
@@ -37,7 +47,7 @@ export default function RefereeToolbar({ status, players, onPause, onResume, onQ
             key={p.id}
             variant="ghost"
             size="sm"
-            className="text-white border-gray-500 hover:bg-gray-700"
+            className="!border-gray-300 !text-text-main hover:!bg-danger-50 hover:!border-danger-300 hover:!text-danger-500"
             disabled={!canAct || p.finished}
             onClick={() => setQuitTarget(p.id)}
           >
@@ -47,7 +57,7 @@ export default function RefereeToolbar({ status, players, onPause, onResume, onQ
 
         <div className="flex-1" />
 
-        <Button variant="ghost" size="sm" className="text-white border-gray-500 hover:bg-gray-700" onClick={() => setShowReturnModal(true)}>
+        <Button variant="ghost" size="sm" className="!border-gray-300 !text-text-main" onClick={() => setShowReturnModal(true)}>
           ↩ 返回
         </Button>
       </div>

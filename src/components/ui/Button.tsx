@@ -1,12 +1,13 @@
 import { type ButtonHTMLAttributes } from 'react'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'danger' | 'warning' | 'ghost'
+  variant?: 'primary' | 'success' | 'danger' | 'warning' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
 }
 
 const variantClasses: Record<string, string> = {
   primary: 'bg-primary-500 hover:bg-primary-700 text-white',
+  success: 'bg-success-500 hover:bg-success-700 text-white',
   danger: 'bg-danger-500 hover:bg-danger-700 text-white',
   warning: 'bg-warning-500 hover:bg-warning-700 text-white',
   ghost: 'bg-transparent hover:bg-gray-200 text-main border border-gray-300',

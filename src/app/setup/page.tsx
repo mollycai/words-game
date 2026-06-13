@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSetupStore } from '@/stores/setupStore'
 import Button from '@/components/ui/Button'
@@ -10,9 +11,14 @@ import ExcelUploader from '@/components/setup/ExcelUploader'
 export default function SetupPage() {
   const router = useRouter()
   const {
-    playerCount, wordCount, wordPairs, sourceFileName,
-    setPlayerCount, setWordCount, setWordPairs,
+    playerCount, wordCount, wordPairs, sourceFileName, hydrated,
+    hydrate, setPlayerCount, setWordCount, setWordPairs, clearWordPairs,
   } = useSetupStore()
+
+  // Hydrate persisted state after mount (avoids SSR hydration mismatch)
+  useEffect(() => {
+    hydrate()
+  }, [hydrate])
 
   const canStart = wordPairs.length > 0 && wordPairs.length >= wordCount && wordCount >= 10
 
@@ -28,7 +34,13 @@ export default function SetupPage() {
 
         <PlayerCountSelector value={playerCount} onChange={setPlayerCount} />
 
-        <ExcelUploader onParsed={setWordPairs} />
+        <ExcelUploader
+          hasExisting={hydrated && wordPairs.length > 0}
+          existingFileName={sourceFileName}
+          existingTotal={wordPairs.length}
+          onParsed={setWordPairs}
+          onClear={clearWordPairs}
+        />
 
         <WordCountInput value={wordCount} max={wordPairs.length} onChange={setWordCount} />
 
@@ -36,7 +48,7 @@ export default function SetupPage() {
         <div className="bg-surface-page rounded-xl p-4 text-sm space-y-1">
           <p><span className="text-muted">比赛人数：</span><strong>{playerCount} 人</strong></p>
           <p><span className="text-muted">每人单词数：</span><strong>{wordCount} 个</strong></p>
-          <p><span className="text-muted">单词表：</span><strong>{sourceFileName || '未导入'}</strong>（共 {wordPairs.length} 词）</p>
+          <p><span className="text-muted">单词表：</span><strong>{wordPairs.length > 0 ? `${sourceFileName}（共 ${wordPairs.length} 词）` : '未导入'}</strong></p>
         </div>
 
         <div className="flex gap-3">

@@ -13,8 +13,10 @@ interface PlayerAreaProps {
 export default function PlayerArea({ player, disabled, onBlockClick }: PlayerAreaProps) {
   return (
     <div
-      className="flex-1 flex flex-col min-w-0"
-      style={{ borderRight: player.id < 3 ? '2px dashed #e5e7eb' : 'none' }}
+      className="flex-1 flex flex-col min-w-0 bg-white/50"
+      style={{
+        borderRight: player.id < 3 ? '1px solid #e5e7eb' : 'none',
+      }}
     >
       <PlayerTimer
         name={player.name}
@@ -23,12 +25,23 @@ export default function PlayerArea({ player, disabled, onBlockClick }: PlayerAre
         finished={player.finished}
         quit={player.quit}
       />
-      <div className={`flex-1 ${player.quit ? 'opacity-40 pointer-events-none' : ''}`}>
+
+      <div className={`flex-1 flex flex-col ${player.quit ? 'opacity-30 pointer-events-none grayscale' : ''}`}>
         {player.quit && (
-          <div className="flex items-center justify-center h-full">
-            <span className="text-danger-500 font-bold text-lg">已弃权</span>
+          <div className="flex-1 flex items-center justify-center">
+            <span
+              className="text-lg font-extrabold px-4 py-2 rounded-xl"
+              style={{
+                color: player.color,
+                border: `2px dashed ${player.color}40`,
+                backgroundColor: `${player.color}08`,
+              }}
+            >
+              已弃权
+            </span>
           </div>
         )}
+
         {!player.quit && (
           <BlockGrid
             blocks={player.blocks}
@@ -38,9 +51,18 @@ export default function PlayerArea({ player, disabled, onBlockClick }: PlayerAre
             onBlockClick={(block) => onBlockClick(player.id, block)}
           />
         )}
+
         {player.finished && !player.quit && (
-          <div className="flex items-center justify-center py-4">
-            <span className="text-success-500 font-bold text-lg">✅ 完成!</span>
+          <div className="flex items-center justify-center py-3">
+            <div
+              className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm"
+              style={{
+                backgroundColor: `${player.color}12`,
+                color: player.color,
+              }}
+            >
+              ✅ 全部完成!
+            </div>
           </div>
         )}
       </div>

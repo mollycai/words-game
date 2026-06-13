@@ -17,7 +17,7 @@ export default function BlockGrid({ blocks, playerId, playerColor, disabled, onB
 
   return (
     <div
-      className="grid gap-2 p-2"
+      className="grid gap-2.5 p-3 flex-1 content-start"
       style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
     >
       {blocks.map((block) => (

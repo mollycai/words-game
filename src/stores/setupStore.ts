@@ -7,20 +7,41 @@ interface SetupStore {
   wordCount: number
   wordPairs: WordPair[]
   sourceFileName: string
+  hydrated: boolean
+  hydrate: () => void
   setPlayerCount: (n: number) => void
   setWordCount: (n: number) => void
   setWordPairs: (pairs: WordPair[], fileName: string) => void
+  clearWordPairs: () => void
   reset: () => void
   isValid: () => boolean
 }
 
-const cached = loadSetupPrefs()
-
 export const useSetupStore = create<SetupStore>((set, get) => ({
-  playerCount: cached?.playerCount ?? 2,
-  wordCount: cached?.wordCount ?? 10,
+  // Default values — hydrated from localStorage on client mount
+  playerCount: 2,
+  wordCount: 10,
   wordPairs: [],
   sourceFileName: '',
+  hydrated: false,
+
+  hydrate: () => {
+    if (get().hydrated) return
+    const prefs = loadSetupPrefs()
+    const savedPairs = loadWordPairs()
+    const pairs: WordPair[] = (savedPairs ?? []).map((p, i) => ({
+      id: `wp_${i}`,
+      english: p.english,
+      chinese: p.chinese,
+    }))
+    set({
+      playerCount: prefs?.playerCount ?? 2,
+      wordCount: prefs?.wordCount ?? 10,
+      wordPairs: pairs,
+      sourceFileName: pairs.length > 0 ? '（已缓存）' : '',
+      hydrated: true,
+    })
+  },
 
   setPlayerCount: (n) => {
     set({ playerCount: n })
@@ -35,6 +56,11 @@ export const useSetupStore = create<SetupStore>((set, get) => ({
   setWordPairs: (pairs, fileName) => {
     set({ wordPairs: pairs, sourceFileName: fileName })
     saveWordPairs(pairs.map(p => ({ english: p.english, chinese: p.chinese })))
+  },
+
+  clearWordPairs: () => {
+    set({ wordPairs: [], sourceFileName: '' })
+    saveWordPairs([])
   },
 
   reset: () => set({ playerCount: 2, wordCount: 10, wordPairs: [], sourceFileName: '' }),

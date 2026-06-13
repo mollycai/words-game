@@ -13,37 +13,47 @@ export default function WordBlock({ block, color, onClick, disabled }: WordBlock
   const isMatched = block.status === 'matched'
   const isSelected = block.status === 'selected'
   const isWrong = block.status === 'wrong'
-
-  const borderColor = block.type === 'english' ? color : `${color}80`
+  const isEnglish = block.type === 'english'
 
   return (
     <button
       onClick={onClick}
       disabled={disabled || isMatched}
       className={`
-        relative w-full aspect-[3/2] rounded-xl font-bold
-        flex items-center justify-center text-center px-2
+        relative w-full aspect-[3/2] rounded-2xl font-bold
+        flex flex-col items-center justify-center text-center px-2 gap-0.5
         transition-all duration-200
         min-w-[44px] min-h-[44px]
         ${isMatched ? 'scale-0 opacity-0 pointer-events-none' : ''}
-        ${isSelected ? 'scale-105 shadow-lg z-10 -translate-y-0.5' : ''}
+        ${isSelected
+          ? 'scale-105 z-10 -translate-y-1 shadow-xl ring-2'
+          : 'shadow-sm hover:shadow-md hover:-translate-y-0.5'
+        }
         ${isWrong ? 'animate-shake ring-2 ring-danger-500' : ''}
-        ${!isSelected && !isWrong ? 'hover:shadow-md hover:-translate-y-0.5' : ''}
+        ${isSelected ? '' : isEnglish ? 'bg-gradient-to-b from-white to-blue-50/30' : 'bg-gradient-to-b from-white to-orange-50/30'}
       `}
       style={{
-        backgroundColor: isSelected ? color : '#FFFFFF',
-        borderColor: isSelected ? color : borderColor,
-        borderWidth: '2px',
+        borderColor: isSelected ? color : isEnglish ? `${color}60` : `${color}30`,
+        borderWidth: isSelected ? '2.5px' : '1.5px',
+        backgroundColor: isSelected ? color : undefined,
         color: isSelected ? '#FFFFFF' : '#1A1A2E',
-        boxShadow: isSelected ? `0 4px 16px ${color}40` : undefined,
+        boxShadow: isSelected ? `0 8px 24px ${color}40` : undefined,
+        ...(isSelected ? {} : {}),
       }}
     >
-      <span className="text-sm sm:text-base leading-tight">{block.text}</span>
+      {/* Type ribbon */}
       <span
-        className="absolute top-1 right-1.5 text-[10px] opacity-40"
-        style={{ color: isSelected ? 'rgba(255,255,255,0.7)' : undefined }}
+        className={`
+          absolute -top-0.5 -right-0.5 px-1.5 py-0.5 rounded-bl-lg rounded-tr-xl text-[10px] font-semibold
+          ${isSelected ? 'bg-white/20 text-white/90' : isEnglish ? 'bg-primary-100 text-primary-600' : 'bg-warning-100 text-warning-600'}
+        `}
       >
-        {block.type === 'english' ? 'EN' : '中'}
+        {isEnglish ? 'EN' : '中'}
+      </span>
+
+      {/* Main text */}
+      <span className={`leading-tight ${isSelected ? 'text-base' : 'text-sm sm:text-base'}`}>
+        {block.text}
       </span>
     </button>
   )
