@@ -1,0 +1,52 @@
+import * as XLSX from 'xlsx'
+import type { WordPair } from '@/types'
+
+export interface ParseResult {
+  pairs: WordPair[]
+  total: number
+}
+
+export interface ParseError {
+  error: string
+}
+
+export function parseExcelFile(file: File): Promise<ParseResult> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      try {
+        const data = new Uint8Array(e.target!.result as ArrayBuffer)
+        const workbook = XLSX.read(data, { type: 'array' })
+        const sheetName = workbook.SheetNames[0]
+        if (!sheetName) {
+          reject({ error: '文件中没有找到工作表' })
+          return
+        }
+        const sheet = workbook.Sheets[sheetName]
+        const rows: unknown[][] = XLSX.utils.sheet_to_json(sheet, { header: 1 })
+
+        const pairs: WordPair[] = []
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i]
+          if (!row || row.length < 2) continue
+          const english = String(row[0] ?? '').trim()
+          const chinese = String(row[1] ?? '').trim()
+          // Skip header row or empty cells
+          if (!english || !chinese) continue
+          if (english === '英文' || english === '单词' || english.toLowerCase() === 'english') continue
+          pairs.push({ id: `wp_${i}`, english, chinese })
+        }
+
+        if (pairs.length === 0) {
+          reject({ error: '文件中没有解析到有效的单词数据' })
+          return
+        }
+        resolve({ pairs, total: pairs.length })
+      } catch {
+        reject({ error: '文件解析失败，请上传 .xlsx 或 .xls 文件' })
+      }
+    }
+    reader.onerror = () => reject({ error: '文件读取失败' })
+    reader.readAsArrayBuffer(file)
+  })
+}
