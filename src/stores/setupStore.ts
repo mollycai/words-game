@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { WordPair } from '@/types'
-import { saveSetupPrefs, loadSetupPrefs, saveWordPairs, loadWordPairs } from '@/lib/storage'
+import { saveSetupPrefs, loadSetupPrefs, saveWordPairs, loadWordPairs, clearWordPairsStorage } from '@/lib/storage'
 
 interface SetupStore {
   playerCount: number
@@ -28,8 +28,8 @@ export const useSetupStore = create<SetupStore>((set, get) => ({
   hydrate: () => {
     if (get().hydrated) return
     const prefs = loadSetupPrefs()
-    const savedPairs = loadWordPairs()
-    const pairs: WordPair[] = (savedPairs ?? []).map((p, i) => ({
+    const saved = loadWordPairs()
+    const pairs: WordPair[] = (saved?.pairs ?? []).map((p, i) => ({
       id: `wp_${i}`,
       english: p.english,
       chinese: p.chinese,
@@ -38,7 +38,7 @@ export const useSetupStore = create<SetupStore>((set, get) => ({
       playerCount: prefs?.playerCount ?? 2,
       wordCount: prefs?.wordCount ?? 10,
       wordPairs: pairs,
-      sourceFileName: pairs.length > 0 ? '（已缓存）' : '',
+      sourceFileName: saved?.fileName || (pairs.length > 0 ? '（已缓存）' : ''),
       hydrated: true,
     })
   },
@@ -55,12 +55,12 @@ export const useSetupStore = create<SetupStore>((set, get) => ({
 
   setWordPairs: (pairs, fileName) => {
     set({ wordPairs: pairs, sourceFileName: fileName })
-    saveWordPairs(pairs.map(p => ({ english: p.english, chinese: p.chinese })))
+    saveWordPairs(pairs.map(p => ({ english: p.english, chinese: p.chinese })), fileName)
   },
 
   clearWordPairs: () => {
     set({ wordPairs: [], sourceFileName: '' })
-    saveWordPairs([])
+    clearWordPairsStorage()
   },
 
   reset: () => set({ playerCount: 2, wordCount: 10, wordPairs: [], sourceFileName: '' }),

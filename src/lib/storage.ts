@@ -1,6 +1,7 @@
 const KEYS = {
   SETUP: 'words-game-setup',
   WORDS: 'words-game-words',
+  WORDS_FILE_NAME: 'words-game-words-filename',
 } as const
 
 export function saveSetupPrefs(prefs: { playerCount: number; wordCount: number }): void {
@@ -18,17 +19,28 @@ export function loadSetupPrefs(): { playerCount: number; wordCount: number } | n
   }
 }
 
-export function saveWordPairs(pairs: { english: string; chinese: string }[]): void {
+export function saveWordPairs(pairs: { english: string; chinese: string }[], fileName?: string): void {
   try {
     localStorage.setItem(KEYS.WORDS, JSON.stringify(pairs))
+    if (fileName !== undefined) {
+      localStorage.setItem(KEYS.WORDS_FILE_NAME, fileName)
+    }
   } catch { /* quota exceeded */ }
 }
 
-export function loadWordPairs(): { english: string; chinese: string }[] | null {
+export function loadWordPairs(): { pairs: { english: string; chinese: string }[]; fileName: string } | null {
   try {
     const raw = localStorage.getItem(KEYS.WORDS)
-    return raw ? JSON.parse(raw) : null
+    const fileName = localStorage.getItem(KEYS.WORDS_FILE_NAME) || ''
+    return raw ? { pairs: JSON.parse(raw), fileName } : null
   } catch {
     return null
   }
+}
+
+export function clearWordPairsStorage(): void {
+  try {
+    localStorage.removeItem(KEYS.WORDS)
+    localStorage.removeItem(KEYS.WORDS_FILE_NAME)
+  } catch { /* ignore */ }
 }
