@@ -34,10 +34,10 @@ export default function WordBlock({ block, color, onClick, disabled }: WordBlock
       style={{
         backgroundColor: isSelected
           ? color
-          : isEnglish ? '#EDF4FC' : '#FFF8F0',
+          : isEnglish ? '#EDF4FC' : '#FFFFFF',
         borderColor: isSelected
           ? color
-          : isEnglish ? `${color}35` : `${color}18`,
+          : isEnglish ? `${color}35` : '#E5E7EB',
         borderWidth: isSelected ? '2px' : '1px',
         color: isSelected ? '#FFFFFF' : '#1A1A2E',
         boxShadow: isSelected ? `0 4px 16px ${color}40` : undefined,

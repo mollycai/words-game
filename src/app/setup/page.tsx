@@ -29,7 +29,7 @@ export default function SetupPage() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-6">
-      <div className="bg-white rounded-3xl shadow-lg p-10 max-w-md w-full space-y-8">
+      <div className={`bg-white rounded-3xl shadow-lg p-10 max-w-md w-full space-y-8 transition-opacity duration-200 ${hydrated ? 'opacity-100' : 'opacity-0'}`}>
         <h1 className="text-2xl font-bold text-center">⚙️ 比赛设置</h1>
 
         <PlayerCountSelector value={playerCount} onChange={setPlayerCount} />
