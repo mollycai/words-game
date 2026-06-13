@@ -9,7 +9,16 @@
       "Bash(git commit *)",
       "Bash(pnpm init *)",
       "Bash(pnpm add *)",
-      "Bash(timeout 20 pnpm dev)"
+      "Bash(timeout 20 pnpm dev)",
+      "Bash(pnpm exec *)",
+      "Bash(npx tailwindcss *)",
+      "Bash(timeout 30 pnpm dev)",
+      "Bash(pnpm dlx *)",
+      "Bash(pnpm dev *)",
+      "Bash(kill %1)",
+      "Bash(wait)",
+      "Bash(node *)",
+      "Bash(./node_modules/.bin/tailwindcss *)"
     ]
   }
 }
