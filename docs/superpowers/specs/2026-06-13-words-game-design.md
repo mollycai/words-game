@@ -6,10 +6,10 @@
 
 | 字段 | 内容 |
 |------|------|
-| 版本 | v1.0 |
+| 版本 | v1.1 |
 | 日期 | 2026-06-13 |
 | 关联 PRD | PRD-英文单词消消乐.md |
-| 范围 | v1 核心可用版本 |
+| 范围 | v1 核心可用版本 + 自测修复 |
 
 ---
 
@@ -372,3 +372,40 @@ idle ──→ countdown ──→ playing ──→ finished
 - [x] 异常场景有对应处理
 - [x] Out of Scope 明确边界
 - [x] 与 PRD 保持一致
+
+---
+
+## 13. v1.1 自测修复记录
+
+### 13.1 设置页 SSR Hydration 错误
+
+**问题**: `setupStore` 在模块初始化时调用 `loadSetupPrefs()` 读取 localStorage。SSR 时服务端无 localStorage 返回 null，客户端有值，导致 React hydration mismatch。
+
+**修复**: setupStore 默认值始终为初始值，新增 `hydrate()` 方法在客户端 `useEffect` 中调用，读取 localStorage 并更新 store。`hydrated` 标志防止重复 hydrate。
+
+### 13.2 单词表持久化与删除
+
+**问题**: 上传的 Excel 文件在刷新后丢失，无法删除已导入的单词表。
+
+**修复**: 
+- `setupStore.hydrate()` 同时从 localStorage 恢复缓存的 wordPairs
+- 新增 `clearWordPairs()` action，同时清除内存和 localStorage
+- `ExcelUploader` 新增 `onClear` 回调，显示删除按钮（🗑），点击后清除文件可重新上传
+
+### 13.3 比赛界面 UI 重构 + 暂停修复
+
+**问题**: 比赛界面设计简陋；暂停后无法恢复（暂停遮罩层覆盖了工具栏的「继续」按钮）。
+
+**修复**:
+- **z-index 层级**: 倒计时 z-50 > 工具栏 z-40 > 暂停遮罩 z-30（`pointer-events-none`）。工具栏始终在暂停遮罩上方可点击
+- **WordBlock 重设计**: 卡片渐变背景（英文蓝底/中文橙底）、类型飘带角标（EN/中）、选中态上浮+阴影、匹配成功缩放消失
+- **PlayerTimer 重设计**: 选手色渐变背景卡片、完成/弃权独立状态样式
+- **PlayerArea 重设计**: 弃权区虚线边框+选手色、完成区色块提示
+- **RefereeToolbar 重设计**: 白底毛玻璃+状态指示灯、分隔线、按钮样式优化
+- **Button 组件**: 新增 `success` variant（绿色）
+
+### 13.4 结果页返回设置导航错误
+
+**问题**: 点击「返回设置」实际跳转到首页 `/`。原因是 `reset()` 将 `players` 清空，触发 `useEffect` 中 `players.length === 0` 的 `/` 重定向，覆盖了 `router.push('/setup')`。
+
+**修复**: 使用 `useRef` 记录是否已加载过有效结果数据。只有首次挂载且无数据时才重定向到 `/`。
