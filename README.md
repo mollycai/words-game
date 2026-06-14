@@ -14,6 +14,10 @@
   教师导入单词表 · 学生同屏竞技 · 趣味消除玩法
 </p>
 
+<p align="center">
+  <a href="https://mollycai.dpdns.org"><strong>🔗 在线体验</strong></a>
+</p>
+
 ---
 
 ## ✨ 特性
