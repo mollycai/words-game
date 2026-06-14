@@ -45,20 +45,26 @@ export function parseExcelFile(file: File): Promise<ParseResult> {
         const sheet = workbook.Sheets[sheetName]
         const rows: unknown[][] = XLSX.utils.sheet_to_json(sheet, { header: 1 })
 
+        const headerTexts = new Set(['word', 'meaning', '英文', '单词', 'english', '中文', '释义', 'chinese'])
         const pairs: WordPair[] = []
         for (let i = 0; i < rows.length; i++) {
+          // Always skip the first row (header)
+          if (i === 0) continue
           const row = rows[i]
           if (!row || row.length < 2) continue
           const english = String(row[0] ?? '').trim()
           const chinese = String(row[1] ?? '').trim()
-          // Skip header row or empty cells
           if (!english || !chinese) continue
-          if (english === '英文' || english === '单词' || english.toLowerCase() === 'english') continue
+          if (headerTexts.has(english.toLowerCase())) continue
           pairs.push({ id: `wp_${i}`, english, chinese })
         }
 
         if (pairs.length === 0) {
           reject({ error: '文件中没有解析到有效的单词数据' })
+          return
+        }
+        if (pairs.length < 10) {
+          reject({ error: `仅解析到 ${pairs.length} 个单词，请上传包含至少 10 个单词的单词表` })
           return
         }
         resolve({ pairs, total: pairs.length })

@@ -23,7 +23,15 @@
       "Bash(git -C /Users/edwincai/project/words-game add src/components/result/RankCard.tsx src/components/result/Podium.tsx src/app/result/page.tsx)",
       "Bash(git -C /Users/edwincai/project/words-game commit -m 'feat: add result page with podium and rank cards *)",
       "Bash(git -C /Users/edwincai/project/words-game log --oneline -3)",
-      "Bash(pnpm build *)"
+      "Bash(pnpm build *)",
+      "Bash(command *)",
+      "Bash(curl *)",
+      "Bash(tar --exclude='node_modules' --exclude='.git' --exclude='.env' --exclude='.env.*' -czf /tmp/words-game-deploy.tgz .)",
+      "Bash(npm install *)",
+      "Bash(vercel whoami *)",
+      "Bash(vercel *)",
+      "Bash(pnpm install *)",
+      "Bash(git push *)"
     ]
   }
 }
