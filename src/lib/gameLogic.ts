@@ -42,7 +42,37 @@ export function gridCols(total: number): number {
   if (total <= 4) return 2
   if (total <= 9) return 3
   if (total <= 16) return 4
-  return 5
+  if (total <= 25) return 5
+  if (total <= 36) return 6
+  if (total <= 50) return 7
+  if (total <= 64) return 8
+  if (total <= 80) return 9
+  return 10
+}
+
+/** Compute font size in px for blocks based on total count */
+export function blockFontSize(total: number): number {
+  if (total <= 20) return 13
+  if (total <= 40) return 11
+  if (total <= 60) return 10
+  if (total <= 80) return 9
+  return 8
+}
+
+/** Compute grid gap in Tailwind class based on total blocks */
+export function blockGap(total: number): string {
+  if (total <= 20) return 'gap-3'
+  if (total <= 40) return 'gap-2'
+  if (total <= 60) return 'gap-1.5'
+  if (total <= 80) return 'gap-1'
+  return 'gap-0.5'
+}
+
+/** Compute grid padding based on total blocks */
+export function blockPadding(total: number): string {
+  if (total <= 20) return 'p-3'
+  if (total <= 60) return 'p-2'
+  return 'p-1'
 }
 
 /** Rank players: finished first by elapsed, then quitters by quitTime */

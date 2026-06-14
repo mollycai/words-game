@@ -1,7 +1,7 @@
 'use client'
 
 import type { Block } from '@/types'
-import { gridCols } from '@/lib/gameLogic'
+import { gridCols, blockFontSize, blockGap, blockPadding } from '@/lib/gameLogic'
 import WordBlock from './WordBlock'
 
 interface BlockGridProps {
@@ -17,15 +17,17 @@ function gridRows(total: number, cols: number): number {
 }
 
 export default function BlockGrid({ blocks, playerId, playerColor, disabled, onBlockClick }: BlockGridProps) {
-  const cols = gridCols(blocks.length)
-  const rows = gridRows(blocks.length, cols)
+  const total = blocks.length
+  const cols = gridCols(total)
+  const rows = gridRows(total, cols)
+  const fontSize = blockFontSize(total)
 
   return (
     <div
-      className="grid h-full gap-3 p-3"
+      className={`grid h-full overflow-auto ${blockGap(total)} ${blockPadding(total)}`}
       style={{
         gridTemplateColumns: `repeat(${cols}, 1fr)`,
-        gridTemplateRows: `repeat(${rows}, 1fr)`,
+        gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
       }}
     >
       {blocks.map((block) => (
@@ -34,6 +36,7 @@ export default function BlockGrid({ blocks, playerId, playerColor, disabled, onB
           block={block}
           color={playerColor}
           disabled={disabled}
+          fontSize={fontSize}
           onClick={() => onBlockClick(block)}
         />
       ))}

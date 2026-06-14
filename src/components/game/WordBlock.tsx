@@ -7,9 +7,10 @@ interface WordBlockProps {
   color: string
   onClick: () => void
   disabled: boolean
+  fontSize: number
 }
 
-export default function WordBlock({ block, color, onClick, disabled }: WordBlockProps) {
+export default function WordBlock({ block, color, onClick, disabled, fontSize }: WordBlockProps) {
   const isMatched = block.status === 'matched'
   const isSelected = block.status === 'selected'
   const isWrong = block.status === 'wrong'
@@ -20,10 +21,9 @@ export default function WordBlock({ block, color, onClick, disabled }: WordBlock
       onClick={onClick}
       disabled={disabled || isMatched}
       className={`
-        relative w-full rounded-xl font-semibold
+        relative w-full rounded-lg font-semibold
         flex items-center justify-center text-center
         transition-all duration-200
-        min-w-[44px] min-h-[44px]
         ${isMatched ? 'scale-0 opacity-0 pointer-events-none' : ''}
         ${isSelected
           ? 'scale-105 z-10 shadow-xl ring-2 -translate-y-0.5'
@@ -41,15 +41,10 @@ export default function WordBlock({ block, color, onClick, disabled }: WordBlock
         borderWidth: isSelected ? '2px' : '1px',
         color: isSelected ? '#FFFFFF' : '#1A1A2E',
         boxShadow: isSelected ? `0 4px 16px ${color}40` : undefined,
+        fontSize: `${fontSize}px`,
       }}
     >
-      {/* Tiny type dot on top-right corner */}
-      <span
-        className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full"
-        style={{ backgroundColor: isSelected ? 'rgba(255,255,255,0.6)' : isEnglish ? `${color}60` : `${color}30` }}
-      />
-
-      <span className="text-[13px] leading-tight px-0.5 line-clamp-2">
+      <span className="leading-tight px-0.5 line-clamp-2">
         {block.text}
       </span>
     </button>
