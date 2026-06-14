@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <a href="https://mollycai.dpdns.org"><strong>🔗 在线体验</strong></a>
+  <a href="https://words-game.mollycai.dpdns.org"><strong>🔗 在线体验</strong></a>
 </p>
 
 ---
