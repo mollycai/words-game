@@ -2,25 +2,26 @@
 
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
-import { PixelGear, PixelDoc, PixelTrophy, PixelRocket, PixelJoystick } from '@/components/icons'
+import { PixelText } from '@/components/ui/PixelText'
+import { PixelGear, PixelDoc, PixelPlay, PixelRocket, PixelJoystick } from '@/components/icons'
 
 const FLOATING_CHARS = [
-  { char: 'A', top: '8%',  left: '8%',  rotate: '-12deg', size: 'text-7xl' },
-  { char: 'e', top: '15%', right: '12%', rotate: '8deg',   size: 'text-6xl' },
-  { char: 'W', top: '25%', left: '5%',   rotate: '6deg',   size: 'text-5xl' },
-  { char: 'o', top: '35%', right: '8%',  rotate: '-5deg',  size: 'text-6xl' },
-  { char: 'r', top: '55%', left: '10%',  rotate: '15deg',  size: 'text-5xl' },
-  { char: 'd', top: '65%', right: '6%',  rotate: '-8deg',  size: 'text-7xl' },
-  { char: 'M', top: '75%', left: '15%',  rotate: '-3deg',  size: 'text-6xl' },
-  { char: 't', top: '80%', right: '15%', rotate: '10deg',  size: 'text-5xl' },
-  { char: 'c', top: '12%', left: '82%',  rotate: '-10deg', size: 'text-4xl' },
-  { char: 'h', top: '45%', left: '88%',  rotate: '7deg',   size: 'text-5xl' },
+  { char: 'A', top: '8%',  left: '8%',  rotate: '-12deg', size: 'text-7xl', glow: 'rgba(75,63,217,0.4)' },
+  { char: 'e', top: '15%', right: '12%', rotate: '8deg',   size: 'text-6xl', glow: 'rgba(255,73,48,0.3)' },
+  { char: 'W', top: '25%', left: '5%',   rotate: '6deg',   size: 'text-5xl', glow: 'rgba(6,214,160,0.3)' },
+  { char: 'o', top: '35%', right: '8%',  rotate: '-5deg',  size: 'text-6xl', glow: 'rgba(245,166,35,0.35)' },
+  { char: 'r', top: '55%', left: '10%',  rotate: '15deg',  size: 'text-5xl', glow: 'rgba(75,63,217,0.35)' },
+  { char: 'd', top: '65%', right: '6%',  rotate: '-8deg',  size: 'text-7xl', glow: 'rgba(255,73,48,0.4)' },
+  { char: 'M', top: '75%', left: '15%',  rotate: '-3deg',  size: 'text-6xl', glow: 'rgba(6,214,160,0.3)' },
+  { char: 't', top: '80%', right: '15%', rotate: '10deg',  size: 'text-5xl', glow: 'rgba(245,166,35,0.3)' },
+  { char: 'c', top: '12%', left: '82%',  rotate: '-10deg', size: 'text-4xl', glow: 'rgba(75,63,217,0.3)' },
+  { char: 'h', top: '45%', left: '88%',  rotate: '7deg',   size: 'text-5xl', glow: 'rgba(255,73,48,0.25)' },
 ]
 
 const FEATURES = [
   { Icon: PixelGear, label: '设置规则', desc: '人数 & 单词数' },
   { Icon: PixelDoc, label: '导入词汇', desc: '上传 Excel 表' },
-  { Icon: PixelTrophy, label: '开始比赛', desc: '同屏竞技 PK' },
+  { Icon: PixelPlay, label: '开始比赛', desc: '同屏竞技 PK' },
 ]
 
 export default function HomePage() {
@@ -31,12 +32,13 @@ export default function HomePage() {
         {FLOATING_CHARS.map((item, i) => (
           <span
             key={i}
-            className={`absolute ${item.size} font-bold`}
+            className={`absolute ${item.size} font-bold animate-neon-flicker`}
             style={{
               top: item.top,
               [item.left ? 'left' : 'right']: item.left || item.right,
               transform: `rotate(${item.rotate})`,
-              color: 'rgba(255,255,255,0.03)',
+              color: 'rgba(255,255,255,0.06)',
+              textShadow: `0 0 8px ${item.glow}, 0 0 16px ${item.glow}`,
               fontFamily: 'var(--font-press-start), monospace',
             }}
           >
@@ -48,19 +50,19 @@ export default function HomePage() {
       <div className="relative z-10 text-center max-w-lg mx-auto">
         {/* Logo / Title with neon glow */}
         <div className="mb-12">
-          <div className="inline-flex items-center gap-3 mb-3">
-            <PixelJoystick size={40} />
-            <h1
-              className="text-5xl font-extrabold tracking-wider animate-neon-flicker"
-              style={{
-                color: '#F0EEFF',
-                textShadow: '0 0 20px rgba(75,63,217,0.7), 0 0 50px rgba(75,63,217,0.4), 0 0 80px rgba(75,63,217,0.2)',
-                fontFamily: 'var(--font-zcool-pixel), var(--font-press-start), monospace',
-              }}
-            >
-              英文单词消消乐
-            </h1>
-            <PixelJoystick size={40} />
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <PixelJoystick size={56} />
+            <PixelText
+              text="英文单词消消乐"
+              charSize={20}
+              // rainbow: 红 橙 黄 绿 蓝 靛 紫
+              color={['#FF3B30','#FF9500','#FFD700','#06D6A0','#4B3FD9','#5856D6','#AF52DE']}
+              glowColor={['#FF3B30','#FF9500','#FFD700','#06D6A0','#4B3FD9','#5856D6','#AF52DE']}
+              cellSize={3}
+              gap={1}
+              className="animate-neon-flicker"
+            />
+            <PixelJoystick size={56} />
           </div>
           <p
             className="text-lg tracking-[0.3em] uppercase animate-neon-flicker"

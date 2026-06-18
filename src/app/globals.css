@@ -26,14 +26,35 @@
   background: linear-gradient(180deg, #0F0D2E 0%, #141236 50%, #1A1548 100%);
 }
 
-/* Neon flicker — gentle pulse for glow elements */
+/* Neon flicker — dramatic arcade sign flicker */
 @keyframes neon-flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
     opacity: 1;
   }
   20%, 24%, 55% {
-    opacity: 0.85;
+    opacity: 0.6;
   }
+}
+
+/* Neon color shift — cycles through arcade neon colors */
+@keyframes neon-shift {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px rgba(75,63,217,0.8)) drop-shadow(0 0 8px rgba(75,63,217,0.5)) drop-shadow(0 0 16px rgba(75,63,217,0.3));
+  }
+  33% {
+    filter: drop-shadow(0 0 4px rgba(255,73,48,0.8)) drop-shadow(0 0 8px rgba(255,73,48,0.5)) drop-shadow(0 0 16px rgba(255,73,48,0.3));
+  }
+  66% {
+    filter: drop-shadow(0 0 4px rgba(6,214,160,0.8)) drop-shadow(0 0 8px rgba(6,214,160,0.5)) drop-shadow(0 0 16px rgba(6,214,160,0.3));
+  }
+}
+
+.animate-neon-flicker {
+  animation: neon-flicker 3s ease-in-out infinite;
+}
+
+.animate-neon-shift {
+  animation: neon-shift 4s ease-in-out infinite;
 }
 
 @keyframes neon-pulse {

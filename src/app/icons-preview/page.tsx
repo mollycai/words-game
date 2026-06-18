@@ -146,15 +146,36 @@ export default function IconsPreviewPage() {
   const [done, setDone] = useState(false)
 
   useEffect(() => {
-    const t = setTimeout(() => {
-      const r: Record<string,Sample> = {}
-      for (const e of EMOJIS) r[e] = sample(e)
-      setResults(r); setDone(true)
-    }, 50)
-    return () => clearTimeout(t)
+    let cancelled = false
+    const r: Record<string,Sample> = {}
+    let i = 0
+
+    function next() {
+      if (cancelled || i >= EMOJIS.length) {
+        if (!cancelled) setDone(true)
+        return
+      }
+      const e = EMOJIS[i]
+      r[e] = sample(e)
+      setResults({ ...r })
+      i++
+      requestAnimationFrame(next)
+    }
+
+    const t = setTimeout(next, 100)
+    return () => { cancelled = true; clearTimeout(t) }
   }, [])
 
   const allCode = EMOJIS.map(e => `export const ${NAMES[e]||e} = ${gridToCode(results[e]?.grid||[])}`).join('\n\n')
+
+  const downloadPatterns = () => {
+    const header = '// Auto-generated from emoji pixel sampling (multi-color)\\n// 16×16 grid, k-means 8-color palette\\n\\n'
+    const blob = new Blob([header + allCode + '\\n'], { type: 'text/typescript' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url; a.download = 'patterns.ts'
+    a.click(); URL.revokeObjectURL(url)
+  }
 
   return (
     <main style={{minHeight:'100vh',background:'linear-gradient(180deg,#0F0D2E,#141236,#1A1548)',padding:'28px',color:'#F0EEFF'}}>
@@ -167,10 +188,14 @@ export default function IconsPreviewPage() {
         </p>
 
         {done && (
-          <div style={{textAlign:'center',marginBottom:20}}>
+          <div style={{textAlign:'center',marginBottom:20,display:'flex',gap:12,justifyContent:'center',flexWrap:'wrap'}}>
             <button onClick={() => navigator.clipboard.writeText(allCode)}
               style={{background:'linear-gradient(135deg,#4B3FD9,#3D32C7)',color:'#FFF',border:'none',borderRadius:8,padding:'10px 24px',fontWeight:700,fontSize:14,cursor:'pointer',boxShadow:'0 0 16px rgba(75,63,217,0.4)'}}>
-              📋 导出全部 patterns.ts 代码
+              📋 复制到剪贴板
+            </button>
+            <button onClick={downloadPatterns}
+              style={{background:'linear-gradient(135deg,#06D6A0,#05B888)',color:'#FFF',border:'none',borderRadius:8,padding:'10px 24px',fontWeight:700,fontSize:14,cursor:'pointer',boxShadow:'0 0 16px rgba(6,214,160,0.4)'}}>
+              💾 下载 patterns.ts
             </button>
           </div>
         )}
