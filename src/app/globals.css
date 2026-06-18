@@ -21,3 +21,7 @@
 .animate-pop-in {
   animation: pop-in 0.3s ease-out;
 }
+
+.bg-arcade {
+  background: linear-gradient(180deg, #0F0D2E 0%, #141236 50%, #1A1548 100%);
+}
