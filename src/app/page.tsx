@@ -51,10 +51,11 @@ export default function HomePage() {
           <div className="inline-flex items-center gap-3 mb-3">
             <PixelJoystick size={40} />
             <h1
-              className="text-5xl font-extrabold tracking-tight"
+              className="text-5xl font-extrabold tracking-wider animate-neon-flicker"
               style={{
                 color: '#F0EEFF',
-                textShadow: '0 0 16px rgba(75,63,217,0.6), 0 0 48px rgba(75,63,217,0.3), 0 0 80px rgba(75,63,217,0.15)',
+                textShadow: '0 0 20px rgba(75,63,217,0.7), 0 0 50px rgba(75,63,217,0.4), 0 0 80px rgba(75,63,217,0.2)',
+                fontFamily: 'var(--font-zcool-pixel), var(--font-press-start), monospace',
               }}
             >
               英文单词消消乐
