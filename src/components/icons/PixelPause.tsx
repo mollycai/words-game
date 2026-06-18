@@ -1,6 +1,6 @@
-import { PixelIconMono } from './PixelIcon'
+import { PixelIcon } from './PixelIcon'
 import { PAUSE } from './patterns'
-interface IconProps { color?: string; size?: number; className?: string }
-export function PixelPause({ color, size, className }: IconProps) {
-  return <PixelIconMono grid={PAUSE} color={color} size={size} className={className} />
+interface IconProps { size?: number; className?: string }
+export function PixelPause({ size, className }: IconProps) {
+  return <PixelIcon grid={PAUSE} size={size} className={className} />
 }

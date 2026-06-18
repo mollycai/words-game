@@ -1,6 +1,6 @@
-import { PixelIconMono } from './PixelIcon'
+import { PixelIcon } from './PixelIcon'
 import { FLAG } from './patterns'
-interface IconProps { color?: string; size?: number; className?: string }
-export function PixelFlag({ color, size, className }: IconProps) {
-  return <PixelIconMono grid={FLAG} color={color} size={size} className={className} />
+interface IconProps { size?: number; className?: string }
+export function PixelFlag({ size, className }: IconProps) {
+  return <PixelIcon grid={FLAG} size={size} className={className} />
 }

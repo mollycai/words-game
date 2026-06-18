@@ -1,6 +1,6 @@
-import { PixelIconMono } from './PixelIcon'
+import { PixelIcon } from './PixelIcon'
 import { JOYSTICK } from './patterns'
-interface IconProps { color?: string; size?: number; className?: string }
-export function PixelJoystick({ color, size, className }: IconProps) {
-  return <PixelIconMono grid={JOYSTICK} color={color} size={size} className={className} />
+interface IconProps { size?: number; className?: string }
+export function PixelJoystick({ size, className }: IconProps) {
+  return <PixelIcon grid={JOYSTICK} size={size} className={className} />
 }

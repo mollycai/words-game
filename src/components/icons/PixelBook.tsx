@@ -1,6 +1,6 @@
-import { PixelIconMono } from './PixelIcon'
+import { PixelIcon } from './PixelIcon'
 import { BOOK } from './patterns'
-interface IconProps { color?: string; size?: number; className?: string }
-export function PixelBook({ color, size, className }: IconProps) {
-  return <PixelIconMono grid={BOOK} color={color} size={size} className={className} />
+interface IconProps { size?: number; className?: string }
+export function PixelBook({ size, className }: IconProps) {
+  return <PixelIcon grid={BOOK} size={size} className={className} />
 }

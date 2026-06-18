@@ -31,7 +31,21 @@
       "Bash(vercel whoami *)",
       "Bash(vercel *)",
       "Bash(pnpm install *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "WebFetch(domain:developers.cloudflare.com)",
+      "Bash(dig words-game.mollycai.dpdns.org +short)",
+      "Bash(dig words-game.mollycai.dpdns.org CNAME +short)",
+      "Bash(git stash *)",
+      "Bash(git checkout *)",
+      "Bash(npm ls *)",
+      "Bash(python3 -c \"from PIL import Image; print\\('pillow ok'\\)\")",
+      "Bash(pnpm ls *)",
+      "Bash(npx tsc *)",
+      "Bash(pnpm lint *)",
+      "Bash(lsof -ti:3001)",
+      "Bash(xargs kill -9)",
+      "Bash(git reset *)",
+      "Bash(pnpm remove *)"
     ]
   }
 }

@@ -1,6 +1,6 @@
-import { PixelIconMono } from './PixelIcon'
+import { PixelIcon } from './PixelIcon'
 import { STAR } from './patterns'
-interface IconProps { color?: string; size?: number; className?: string }
-export function PixelStar({ color, size, className }: IconProps) {
-  return <PixelIconMono grid={STAR} color={color} size={size} className={className} />
+interface IconProps { size?: number; className?: string }
+export function PixelStar({ size, className }: IconProps) {
+  return <PixelIcon grid={STAR} size={size} className={className} />
 }

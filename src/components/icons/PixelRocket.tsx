@@ -1,6 +1,6 @@
-import { PixelIconMono } from './PixelIcon'
+import { PixelIcon } from './PixelIcon'
 import { ROCKET } from './patterns'
-interface IconProps { color?: string; size?: number; className?: string }
-export function PixelRocket({ color, size, className }: IconProps) {
-  return <PixelIconMono grid={ROCKET} color={color} size={size} className={className} />
+interface IconProps { size?: number; className?: string }
+export function PixelRocket({ size, className }: IconProps) {
+  return <PixelIcon grid={ROCKET} size={size} className={className} />
 }

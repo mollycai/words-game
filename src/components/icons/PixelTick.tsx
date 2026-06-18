@@ -1,6 +1,6 @@
-import { PixelIconMono } from './PixelIcon'
+import { PixelIcon } from './PixelIcon'
 import { TICK } from './patterns'
-interface IconProps { color?: string; size?: number; className?: string }
-export function PixelTick({ color, size, className }: IconProps) {
-  return <PixelIconMono grid={TICK} color={color} size={size} className={className} />
+interface IconProps { size?: number; className?: string }
+export function PixelTick({ size, className }: IconProps) {
+  return <PixelIcon grid={TICK} size={size} className={className} />
 }

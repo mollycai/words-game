@@ -1,6 +1,6 @@
-import { PixelIconMono } from './PixelIcon'
+import { PixelIcon } from './PixelIcon'
 import { PLAY } from './patterns'
-interface IconProps { color?: string; size?: number; className?: string }
-export function PixelPlay({ color, size, className }: IconProps) {
-  return <PixelIconMono grid={PLAY} color={color} size={size} className={className} />
+interface IconProps { size?: number; className?: string }
+export function PixelPlay({ size, className }: IconProps) {
+  return <PixelIcon grid={PLAY} size={size} className={className} />
 }
