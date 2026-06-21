@@ -33,10 +33,8 @@ export default function WordCountInput({ value, max, onChange }: WordCountInputP
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Allow free typing (including empty)
     const raw = e.target.value
     setLocal(raw)
-    // Immediately apply if it's a valid number in range
     const n = parseInt(raw, 10)
     if (!isNaN(n) && n >= MIN_WORDS && n <= MAX_WORDS && (max === 0 || n <= max)) {
       onChange(n)
@@ -46,21 +44,38 @@ export default function WordCountInput({ value, max, onChange }: WordCountInputP
   const effectiveMax = max > 0 ? Math.min(max, MAX_WORDS) : MAX_WORDS
 
   return (
-    <div>
-      <label className="block text-sm font-semibold mb-2">
-        每人单词数（{MIN_WORDS}–{effectiveMax}）
-      </label>
+    <div className="flex items-center gap-4">
       <input
-        type="number"
-        min={MIN_WORDS}
-        max={effectiveMax}
+        type="text"
+        inputMode="numeric"
         value={local}
         onChange={handleChange}
         onBlur={handleBlur}
-        className="w-32 h-14 text-center text-xl font-bold border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:outline-none"
+        className="text-center transition-all outline-none"
+        style={{
+          width: 88, height: 48,
+          fontFamily: 'var(--font-press-start), monospace',
+          fontSize: 16,
+          color: '#fff',
+          background: '#0a0a16',
+          border: '2px solid #2a2a3a',
+        }}
+        onFocus={(e) => {
+          e.target.style.borderColor = '#8B83F0'
+          e.target.style.boxShadow = '0 0 10px rgba(139,131,240,0.3)'
+        }}
+        onBlurCapture={(e) => {
+          e.currentTarget.style.borderColor = '#2a2a3a'
+          e.currentTarget.style.boxShadow = 'none'
+        }}
       />
+      <span style={{ fontSize: 10, color: '#666', fontFamily: 'monospace' }}>
+        {MIN_WORDS}–{effectiveMax}
+      </span>
       {max > 0 && parseInt(local, 10) > max && (
-        <p className="text-danger-500 text-xs mt-1">单词表仅有 {max} 个单词，请设置为 {max} 或以下</p>
+        <span style={{ fontSize: 10, color: '#FCC364', textShadow: '0 0 6px rgba(252,195,100,0.3)' }}>
+          词表仅有 {max} 词
+        </span>
       )}
     </div>
   )

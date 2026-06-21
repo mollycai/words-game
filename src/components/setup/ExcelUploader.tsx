@@ -23,7 +23,6 @@ export default function ExcelUploader({
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  // Sync external state when hydrated
   useEffect(() => {
     if (hasExisting && fileName === '' && total === 0) {
       setFileName(existingFileName)
@@ -61,7 +60,6 @@ export default function ExcelUploader({
 
   return (
     <div>
-      <label className="block text-sm font-semibold mb-2">导入单词表 (Excel)</label>
       <input
         ref={inputRef}
         type="file"
@@ -71,40 +69,115 @@ export default function ExcelUploader({
       />
 
       {showFile ? (
-        <div className="flex items-center gap-2">
-          <div className="flex-1 bg-primary-50 border border-primary-200 rounded-xl px-4 py-3 text-sm">
-            <p className="font-semibold text-primary-700">📄 {showFile}</p>
-            <p className="text-primary-500 text-xs mt-0.5">
-              {total > 0 ? `已解析 ${total} 个单词` : `已缓存 ${existingTotal} 个单词`}
-            </p>
-          </div>
-          <button
-            onClick={handleDelete}
-            className="flex-shrink-0 w-10 h-10 rounded-xl bg-danger-100 text-danger-500 hover:bg-danger-200 transition-colors flex items-center justify-center text-lg"
-            title="删除单词表"
+        <div className="flex-1">
+          <div
+            style={{
+              border: '2px solid rgba(79,232,186,0.2)',
+              padding: '12px 14px',
+              background: 'rgba(79,232,186,0.04)',
+            }}
           >
-            🗑
-          </button>
+            <div className="flex items-center gap-3">
+              <span style={{ fontSize: 20 }}>📄</span>
+              <div className="flex-1 min-w-0">
+                <div style={{
+                  fontFamily: '"Courier New", monospace',
+                  fontSize: 11, fontWeight: 700,
+                  color: '#4FE8BA',
+                  textShadow: '0 0 6px rgba(79,232,186,0.3)',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                }}>
+                  {showFile}
+                </div>
+                <div style={{ fontSize: 10, color: '#888', marginTop: 2 }}>
+                  {total > 0 ? `已解析 ${total} 个单词` : `已缓存 ${existingTotal} 个单词`}
+                </div>
+              </div>
+              <button
+                onClick={handleDelete}
+                style={{
+                  width: 36, height: 36,
+                  background: 'transparent',
+                  border: '2px solid rgba(255,59,48,0.2)',
+                  color: '#FF3B30',
+                  fontFamily: '"Courier New", monospace',
+                  fontSize: 14, fontWeight: 700,
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#FF3B30'
+                  e.currentTarget.style.boxShadow = '0 0 8px rgba(255,59,48,0.3)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255,59,48,0.2)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+                title="删除单词表"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+          {error && (
+            <p style={{ fontSize: 10, color: '#FF3B30', marginTop: 6, textShadow: '0 0 6px rgba(255,59,48,0.3)' }}>
+              ❌ {error}
+            </p>
+          )}
         </div>
       ) : (
-        <button
-          onClick={() => inputRef.current?.click()}
-          className="w-full px-6 py-4 border-2 border-dashed border-primary-300 rounded-xl text-primary-500 hover:bg-primary-100 transition-colors font-semibold min-w-[44px] min-h-[44px]"
-        >
-          {loading ? '⏳ 解析中...' : '📁 点击上传 Excel 文件'}
-        </button>
+        <div>
+          <button
+            onClick={() => inputRef.current?.click()}
+            className="w-full flex flex-col items-center gap-1 transition-all"
+            style={{
+              border: '2px dashed #333',
+              padding: '18px 16px',
+              background: 'transparent',
+              cursor: 'pointer',
+              minHeight: 72,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#FCC364'
+              e.currentTarget.style.boxShadow = '0 0 10px rgba(252,195,100,0.12)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = '#333'
+              e.currentTarget.style.boxShadow = 'none'
+            }}
+          >
+            <span style={{ fontSize: 24, opacity: 0.5 }}>📁</span>
+            <span style={{
+              fontFamily: '"Courier New", monospace',
+              fontSize: 11, fontWeight: 700,
+              color: '#aaa',
+              letterSpacing: 1,
+            }}>
+              {loading ? '解析中...' : '点击上传 Excel 文件'}
+            </span>
+            <span style={{ fontSize: 10, color: '#666' }}>.xlsx / .xls</span>
+          </button>
+          {error && (
+            <p style={{ fontSize: 10, color: '#FF3B30', marginTop: 6, textShadow: '0 0 6px rgba(255,59,48,0.3)' }}>
+              ❌ {error}
+            </p>
+          )}
+        </div>
       )}
 
-      {!showFile && total > 0 && <p className="text-success-500 text-xs mt-1">✅ 已导入 {total} 个单词</p>}
-      {error && <p className="text-danger-500 text-xs mt-1">❌ {error}</p>}
-
-      <p className="text-xs text-muted mt-2">
+      <p style={{ fontSize: 10, color: '#555', marginTop: 8 }}>
         还没有单词表？{' '}
         <button
           onClick={downloadTemplate}
-          className="text-primary-500 underline hover:text-primary-700 font-medium"
+          style={{
+            color: '#8B83F0',
+            textDecoration: 'underline',
+            background: 'none', border: 'none',
+            cursor: 'pointer', fontSize: 10,
+            fontFamily: 'monospace',
+          }}
         >
-          下载单词表模板
+          下载模板
         </button>
       </p>
     </div>

@@ -1,0 +1,8 @@
+export { PixelIcon, PixelIconMono } from './PixelIcon'
+export { PixelTrophy } from './PixelTrophy'
+export { PixelMedal } from './PixelMedal'
+export { PixelGear } from './PixelGear'
+export { PixelDoc } from './PixelDoc'
+export { PixelRocket } from './PixelRocket'
+export { PixelPlay } from './PixelPlay'
+export { PixelJoystick } from './PixelJoystick'

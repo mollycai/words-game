@@ -13,9 +13,15 @@ interface PlayerAreaProps {
 export default function PlayerArea({ player, disabled, onBlockClick }: PlayerAreaProps) {
   return (
     <div
-      className="flex-1 flex flex-col min-w-0 bg-white/50 overflow-hidden"
+      className="flex-1 flex flex-col min-w-0 relative"
       style={{
-        borderRight: player.id < 3 ? '1px solid #e5e7eb' : 'none',
+        // Neon vertical divider (except last player)
+        borderRight: player.id < 3
+          ? '2px solid transparent'
+          : 'none',
+        borderImage: player.id < 3
+          ? 'linear-gradient(180deg, transparent, rgba(139,131,240,0.4), rgba(139,131,240,0.15), transparent) 1'
+          : undefined,
       }}
     >
       <PlayerTimer
@@ -26,43 +32,48 @@ export default function PlayerArea({ player, disabled, onBlockClick }: PlayerAre
         quit={player.quit}
       />
 
-      <div className={`flex-1 flex flex-col ${player.quit ? 'opacity-30 pointer-events-none grayscale' : ''}`}>
+      <div className={`flex-1 flex flex-col ${player.quit ? 'opacity-25 pointer-events-none grayscale' : ''}`}>
+        {/* Quit state */}
         {player.quit && (
           <div className="flex-1 flex items-center justify-center">
-            <span
-              className="text-lg font-extrabold px-4 py-2 rounded-xl"
-              style={{
-                color: player.color,
-                border: `2px dashed ${player.color}40`,
-                backgroundColor: `${player.color}08`,
-              }}
-            >
+            <span style={{
+              fontFamily: '"Courier New", monospace',
+              fontSize: 12, fontWeight: 700,
+              color: player.color,
+              border: `2px dashed ${player.color}30`,
+              background: `${player.color}08`,
+              padding: '8px 16px',
+              letterSpacing: 1,
+            }}>
               已弃权
             </span>
           </div>
         )}
 
+        {/* Playing grid */}
         {!player.quit && (
           <BlockGrid
             blocks={player.blocks}
             playerId={player.id}
-            playerColor={player.color}
             disabled={disabled || player.finished}
             onBlockClick={(block) => onBlockClick(player.id, block)}
           />
         )}
 
+        {/* Finished banner */}
         {player.finished && !player.quit && (
-          <div className="flex items-center justify-center py-3">
-            <div
-              className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm"
-              style={{
-                backgroundColor: `${player.color}12`,
-                color: player.color,
-              }}
-            >
-              ✅ 全部完成!
-            </div>
+          <div style={{
+            textAlign: 'center',
+            padding: '8px',
+            fontFamily: '"Courier New", monospace',
+            fontSize: 10, fontWeight: 700,
+            letterSpacing: 1,
+            color: '#4FE8BA',
+            textShadow: '0 0 6px rgba(79,232,186,0.3)',
+            borderTop: '1px solid rgba(79,232,186,0.2)',
+            background: 'rgba(79,232,186,0.04)',
+          }}>
+            ✓ ALL CLEAR!
           </div>
         )}
       </div>

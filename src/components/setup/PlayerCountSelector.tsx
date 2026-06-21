@@ -7,24 +7,26 @@ interface PlayerCountSelectorProps {
 
 export default function PlayerCountSelector({ value, onChange }: PlayerCountSelectorProps) {
   return (
-    <div>
-      <label className="block text-sm font-semibold mb-2">比赛人数</label>
-      <div className="flex gap-2">
-        {[1, 2, 3].map((n) => (
-          <button
-            key={n}
-            onClick={() => onChange(n)}
-            className={`w-16 h-16 rounded-xl text-2xl font-bold transition-colors ${
-              value === n
-                ? 'bg-primary-500 text-white shadow-md'
-                : 'bg-white border-2 border-gray-200 hover:border-primary-300'
-            }`}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
-      <p className="text-xs text-muted mt-1">{value} 人比赛</p>
+    <div className="flex items-center gap-3">
+      {[1, 2, 3].map((n) => (
+        <button
+          key={n}
+          onClick={() => onChange(n)}
+          className="transition-all"
+          style={{
+            width: 52, height: 52,
+            fontFamily: 'var(--font-press-start), monospace',
+            fontSize: 18,
+            color: value === n ? '#fff' : '#555',
+            background: value === n ? 'rgba(139,131,240,0.12)' : '#0a0a16',
+            border: value === n ? '2px solid #8B83F0' : '2px solid #2a2a3a',
+            boxShadow: value === n ? '0 0 12px rgba(139,131,240,0.4), inset 0 0 8px rgba(139,131,240,0.1)' : 'none',
+            cursor: 'pointer',
+          }}
+        >
+          {n}
+        </button>
+      ))}
     </div>
   )
 }
