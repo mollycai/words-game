@@ -7,6 +7,7 @@ import { useSetupStore } from '@/stores/setupStore'
 import PlayerCountSelector from '@/components/setup/PlayerCountSelector'
 import WordCountInput from '@/components/setup/WordCountInput'
 import ExcelUploader from '@/components/setup/ExcelUploader'
+import { useButtonSound } from '@/lib/useButtonSound'
 
 const FLOATING_CHARS = [
   { char: 'S', top: '6%',  left: '6%',  rotate: '-8deg', size: '80px', glow: 'rgba(75,63,217,0.3)' },
@@ -21,6 +22,7 @@ const FLOATING_CHARS = [
 
 export default function SetupPage() {
   const router = useRouter()
+  const { playClick } = useButtonSound()
   const {
     playerCount, wordCount, wordPairs, sourceFileName, hydrated,
     hydrate, setPlayerCount, setWordCount, setWordPairs, clearWordPairs,
@@ -258,7 +260,7 @@ export default function SetupPage() {
                   ← 返回
                 </Link>
                 <button
-                  onClick={handleStart}
+                  onClick={() => { playClick(); handleStart() }}
                   disabled={!canStart}
                   className="flex-1 relative overflow-hidden transition-all"
                   style={{

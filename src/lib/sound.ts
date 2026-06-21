@@ -55,10 +55,26 @@ function noise(start: number, dur: number, vol = 0.06) {
 export function playMatchSound() {
   const c = getCtx()
   const t = c.currentTime
-  // Rapid descending arpeggio
   ;[1200, 900, 600, 350, 200, 100].forEach((f, i) => {
     tone(f, t + i * 0.03, 0.12, 0.08, 'square')
   })
-  // Noise debris
   noise(t, 0.18, 0.06)
+}
+
+/** CONFIRM — dual tone click sound */
+export function playClickSound() {
+  const c = getCtx()
+  const t = c.currentTime
+  tone(523, t, 0.1, 0.08, 'square')
+  tone(784, t + 0.08, 0.15, 0.08, 'square')
+}
+
+/** FANFARE — trumpet entrance sound */
+export function playEnterSound() {
+  const c = getCtx()
+  const t = c.currentTime
+  ;[523, 659, 784, 1047].forEach((f, i) => {
+    tone(f, t + i * 0.12, 0.2, 0.06, 'square')
+  })
+  tone(1319, t + 0.5, 0.4, 0.05, 'square')
 }

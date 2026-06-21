@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { PixelText } from '@/components/ui/PixelText'
 import { PixelGear, PixelDoc, PixelPlay, PixelRocket, PixelJoystick } from '@/components/icons'
+import { useButtonSound } from '@/lib/useButtonSound'
 
 const FLOATING_CHARS = [
   { char: 'A', top: '8%',  left: '8%',  rotate: '-12deg', size: 'text-7xl', glow: 'rgba(75,63,217,0.4)' },
@@ -24,6 +25,8 @@ const FEATURES = [
 ]
 
 export default function HomePage() {
+  const { playClick } = useButtonSound()
+
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
       {/* Decorative floating letters — very dim */}
@@ -133,6 +136,7 @@ export default function HomePage() {
         <Link href="/setup">
           <button
             className="animate-neon-flicker"
+            onClick={() => playClick()}
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 10,
               padding: '16px 48px',

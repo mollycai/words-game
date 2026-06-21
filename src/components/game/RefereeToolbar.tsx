@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import type { PlayerState, GameStatus } from '@/types'
 import Modal from '@/components/ui/Modal'
+import { useButtonSound } from '@/lib/useButtonSound'
 
 interface RefereeToolbarProps {
   status: GameStatus
@@ -16,6 +17,7 @@ interface RefereeToolbarProps {
 export default function RefereeToolbar({ status, players, onPause, onResume, onQuitPlayer, onReturn }: RefereeToolbarProps) {
   const [quitTarget, setQuitTarget] = useState<number | null>(null)
   const [showReturnModal, setShowReturnModal] = useState(false)
+  const { playClick } = useButtonSound()
   const isPlaying = status === 'playing'
   const isPaused = status === 'paused'
   const canAct = isPlaying || isPaused
@@ -64,7 +66,7 @@ export default function RefereeToolbar({ status, players, onPause, onResume, onQ
         {/* Pause / Resume */}
         {canAct && (
           <button
-            onClick={isPaused ? onResume : onPause}
+            onClick={() => { playClick(); isPaused ? onResume() : onPause() }}
             style={{
               padding: '6px 14px',
               fontFamily: 'var(--font-press-start), monospace',
@@ -92,7 +94,7 @@ export default function RefereeToolbar({ status, players, onPause, onResume, onQ
           <button
             key={p.id}
             disabled={!canAct || p.finished}
-            onClick={() => setQuitTarget(p.id)}
+            onClick={() => { playClick(); setQuitTarget(p.id) }}
             style={{
               padding: '6px 14px',
               fontFamily: 'var(--font-press-start), monospace',
@@ -126,7 +128,7 @@ export default function RefereeToolbar({ status, players, onPause, onResume, onQ
 
         {/* Return button */}
         <button
-          onClick={() => setShowReturnModal(true)}
+          onClick={() => { playClick(); setShowReturnModal(true) }}
           style={{
             padding: '6px 14px',
             fontFamily: 'var(--font-press-start), monospace',

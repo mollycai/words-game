@@ -8,6 +8,7 @@ import { rankPlayers } from '@/lib/gameLogic'
 import type { PlayerState } from '@/types'
 import Podium from '@/components/result/Podium'
 import RankCard from '@/components/result/RankCard'
+import { useButtonSound } from '@/lib/useButtonSound'
 
 const FLOATING_CHARS = [
   { char: 'W', top: '8%',  left: '8%',  rotate: '-10deg', size: '72px', glow: 'rgba(245,166,35,0.25)' },
@@ -36,12 +37,16 @@ export default function ResultPage() {
     }
   }, [players, router])
 
+  const { playClick } = useButtonSound()
+
   const handlePlayAgain = () => {
+    playClick()
     reset()
     router.push('/game')
   }
 
   const handleBackToSetup = () => {
+    playClick()
     reset()
     router.push('/setup')
   }
