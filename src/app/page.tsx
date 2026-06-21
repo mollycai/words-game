@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Button from '@/components/ui/Button'
 import { PixelText } from '@/components/ui/PixelText'
 import { PixelGear, PixelDoc, PixelPlay, PixelRocket, PixelJoystick } from '@/components/icons'
 
@@ -128,24 +127,39 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* CTA Button with neon pulse */}
+        {/* CTA Button — pixel arcade style */}
         <Link href="/setup">
-          <Button
-            size="lg"
-            className="text-xl px-14 py-5 rounded-2xl transition-all hover:-translate-y-0.5 animate-neon-pulse"
+          <button
+            className="relative animate-neon-flicker"
             style={{
-              background: 'linear-gradient(135deg, #4B3FD9, #3D32C7)',
-              boxShadow: '0 4px 0 #2E25A3, 0 0 24px rgba(75,63,217,0.5), 0 0 48px rgba(75,63,217,0.2)',
+              display: 'inline-flex', alignItems: 'center', gap: 12,
+              padding: '18px 56px',
+              background: '#4B3FD9',
               color: '#FFF',
-              fontFamily: 'var(--font-press-start), monospace',
-              fontSize: '16px',
+              fontFamily: '"Arial Black", Impact, sans-serif',
+              fontSize: 18, fontWeight: 900, letterSpacing: 2,
+              border: '2px solid #8B83F0',
+              boxShadow: '6px 6px 0 #2E25A3, 0 0 24px rgba(75,63,217,0.5), 0 0 48px rgba(75,63,217,0.2)',
+              cursor: 'pointer',
+              transition: 'transform 0.1s, box-shadow 0.1s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translate(-2px, -2px)'
+              e.currentTarget.style.boxShadow = '8px 8px 0 #2E25A3, 0 0 32px rgba(75,63,217,0.7), 0 0 64px rgba(75,63,217,0.3)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translate(0, 0)'
+              e.currentTarget.style.boxShadow = '6px 6px 0 #2E25A3, 0 0 24px rgba(75,63,217,0.5), 0 0 48px rgba(75,63,217,0.2)'
             }}
           >
-            <span className="flex items-center gap-2">
-              <PixelRocket size={24} />
-              START
-            </span>
-          </Button>
+            {/* Pixel corner accents */}
+            <span style={{ position: 'absolute', top: -2, left: -2, width: 8, height: 8, background: '#8B83F0', display: 'block' }} />
+            <span style={{ position: 'absolute', top: -2, right: -2, width: 8, height: 8, background: '#8B83F0', display: 'block' }} />
+            <span style={{ position: 'absolute', bottom: -2, right: -2, width: 8, height: 8, background: '#8B83F0', display: 'block' }} />
+            <span style={{ position: 'absolute', bottom: -2, left: -2, width: 8, height: 8, background: '#8B83F0', display: 'block' }} />
+            <PixelRocket size={24} />
+            START
+          </button>
         </Link>
 
         {/* Footer */}
