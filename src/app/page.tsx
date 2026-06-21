@@ -18,9 +18,9 @@ const FLOATING_CHARS = [
 ]
 
 const FEATURES = [
-  { Icon: PixelGear, label: '设置规则', desc: '人数 & 单词数', step: '01', color: '#8B83F0' },
-  { Icon: PixelDoc, label: '导入词汇', desc: '上传 Excel 表', step: '02', color: '#FCC364' },
-  { Icon: PixelPlay, label: '开始比赛', desc: '同屏竞技 PK', step: '03', color: '#4FE8BA' },
+  { Icon: PixelGear, label: '设置规则', desc: '选择比赛人数与每人单词数量', step: '01', color: '#8B83F0' },
+  { Icon: PixelDoc, label: '导入词汇', desc: '上传 Excel 单词表即可开始', step: '02', color: '#FCC364' },
+  { Icon: PixelPlay, label: '开始比赛', desc: '三人同屏竞技，看谁先完成', step: '03', color: '#4FE8BA' },
 ]
 
 export default function HomePage() {
@@ -76,89 +76,78 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Feature cards — Pixel Panel style */}
-        <div className="flex gap-3 justify-center mb-12 flex-wrap">
+        {/* Feature cards — CRT Scanline Game Dialog style */}
+        <div className="flex gap-4 justify-center mb-12 flex-wrap">
           {FEATURES.map((step) => (
             <div
               key={step.step}
-              className="relative flex-1 min-w-[150px] max-w-[220px]"
+              className="relative flex-1 min-w-[160px] max-w-[230px]"
               style={{
-                background: 'linear-gradient(180deg, rgba(15,13,46,0.9), rgba(20,18,54,0.9))',
-                border: `2px solid ${step.color}30`,
-                padding: '28px 18px 22px',
-                textAlign: 'center',
-                boxShadow: `3px 3px 0 ${step.color}18, 0 0 20px ${step.color}10`,
+                background: '#0a0a14',
+                border: `2px solid ${step.color}45`,
+                boxShadow: `inset 0 0 30px rgba(0,0,0,0.5), 0 0 16px ${step.color}08`,
+                overflow: 'hidden',
               }}
             >
-              {/* Pixel corner accents */}
-              <span style={{ position: 'absolute', top: -2, left: -2, width: 8, height: 8, background: step.color, display: 'block' }} />
-              <span style={{ position: 'absolute', top: -2, right: -2, width: 8, height: 8, background: step.color, display: 'block' }} />
-              <span style={{ position: 'absolute', bottom: -2, right: -2, width: 8, height: 8, background: step.color, display: 'block' }} />
-
-              {/* Step number — pixel style */}
+              {/* CRT scanlines overlay */}
               <div style={{
-                fontFamily: '"Arial Black", Impact, sans-serif',
-                fontSize: 11, fontWeight: 900, color: step.color,
-                letterSpacing: 2, marginBottom: 14, opacity: 0.8,
-              }}>
-                [{step.step}]
-              </div>
+                position: 'absolute', inset: 0,
+                background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, transparent 2px, rgba(0,0,0,0.1) 4px)',
+                pointerEvents: 'none', zIndex: 2,
+              }} />
 
-              {/* Icon */}
-              <div className="flex justify-center mb-3">
-                <step.Icon size={38} />
-              </div>
-
-              {/* Title */}
+              {/* Header bar */}
               <div style={{
-                fontFamily: '"Arial Black", Impact, sans-serif',
-                fontWeight: 900, fontSize: 14, color: step.color,
-                marginBottom: 6, letterSpacing: 1,
-                textShadow: `0 0 10px ${step.color}40`,
+                background: `${step.color}15`, padding: '8px 12px',
+                borderBottom: `1px solid ${step.color}30`,
+                display: 'flex', alignItems: 'center', gap: 8,
+                position: 'relative', zIndex: 1,
               }}>
-                {step.label}
+                <span style={{ width: 6, height: 6, background: step.color, display: 'inline-block', boxShadow: `0 0 6px ${step.color}` }} />
+                <span style={{ fontFamily: '"Courier New",monospace', fontSize: 11, fontWeight: 700, color: step.color, letterSpacing: 1 }}>
+                  STEP_{step.step}
+                </span>
               </div>
 
-              {/* Description */}
-              <div style={{ fontSize: 12, color: '#9996B0', lineHeight: 1.5 }}>
-                {step.desc}
+              {/* Body */}
+              <div style={{ padding: '22px 18px 18px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                <div className="flex justify-center mb-3">
+                  <step.Icon size={38} />
+                </div>
+                <div style={{
+                  fontFamily: '"Courier New",monospace', fontWeight: 700, fontSize: 13,
+                  color: step.color, margin: '0 0 4px', letterSpacing: 1,
+                  textShadow: `0 0 6px ${step.color}60`,
+                }}>
+                  {step.label}
+                </div>
+                <div style={{ fontSize: 11, color: '#888', fontFamily: 'monospace', lineHeight: 1.5 }}>
+                  {step.desc}
+                </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* CTA Button — pixel arcade style */}
+        {/* CTA Button — CRT Scanline style */}
         <Link href="/setup">
           <button
-            className="relative animate-neon-flicker"
+            className="animate-neon-flicker"
             style={{
-              display: 'inline-flex', alignItems: 'center', gap: 12,
-              padding: '18px 56px',
-              background: '#4B3FD9',
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+              padding: '16px 48px',
+              background: 'transparent',
               color: '#FFF',
-              fontFamily: '"Arial Black", Impact, sans-serif',
-              fontSize: 18, fontWeight: 900, letterSpacing: 2,
+              fontFamily: '"Courier New", monospace',
+              fontSize: 15, fontWeight: 700, letterSpacing: 2,
               border: '2px solid #8B83F0',
-              boxShadow: '6px 6px 0 #2E25A3, 0 0 24px rgba(75,63,217,0.5), 0 0 48px rgba(75,63,217,0.2)',
-              cursor: 'pointer',
-              transition: 'transform 0.1s, box-shadow 0.1s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translate(-2px, -2px)'
-              e.currentTarget.style.boxShadow = '8px 8px 0 #2E25A3, 0 0 32px rgba(75,63,217,0.7), 0 0 64px rgba(75,63,217,0.3)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translate(0, 0)'
-              e.currentTarget.style.boxShadow = '6px 6px 0 #2E25A3, 0 0 24px rgba(75,63,217,0.5), 0 0 48px rgba(75,63,217,0.2)'
+              boxShadow: 'inset 0 0 20px rgba(75,63,217,0.2), 0 0 16px rgba(75,63,217,0.4), 0 0 2px #8B83F0',
+              cursor: 'pointer', position: 'relative', overflow: 'hidden',
             }}
           >
-            {/* Pixel corner accents */}
-            <span style={{ position: 'absolute', top: -2, left: -2, width: 8, height: 8, background: '#8B83F0', display: 'block' }} />
-            <span style={{ position: 'absolute', top: -2, right: -2, width: 8, height: 8, background: '#8B83F0', display: 'block' }} />
-            <span style={{ position: 'absolute', bottom: -2, right: -2, width: 8, height: 8, background: '#8B83F0', display: 'block' }} />
-            <span style={{ position: 'absolute', bottom: -2, left: -2, width: 8, height: 8, background: '#8B83F0', display: 'block' }} />
-            <PixelRocket size={24} />
-            START
+            <span style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, transparent 1px, rgba(0,0,0,0.1) 2px)', pointerEvents: 'none' }} />
+            <PixelRocket size={20} />
+            <span style={{ position: 'relative', zIndex: 1 }}>START</span>
           </button>
         </Link>
 
