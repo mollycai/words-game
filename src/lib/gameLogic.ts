@@ -37,26 +37,26 @@ export function checkMatch(a: Block, b: Block): 'correct' | 'wrong-same-type' | 
   return 'wrong'
 }
 
-/** Compute columns for a grid of `total` blocks to be as square as possible */
+/** Compute columns — wide blocks, single-line text, height-first compression */
 export function gridCols(total: number): number {
-  if (total <= 4) return 2
-  if (total <= 9) return 3
-  if (total <= 16) return 4
-  if (total <= 25) return 5
-  if (total <= 36) return 6
-  if (total <= 50) return 7
-  if (total <= 64) return 8
-  if (total <= 80) return 9
-  return 10
+  if (total <= 6) return 2
+  if (total <= 10) return 2
+  if (total <= 16) return 3
+  if (total <= 24) return 3
+  if (total <= 34) return 4
+  if (total <= 48) return 4
+  if (total <= 64) return 5
+  if (total <= 84) return 5
+  return 6
 }
 
-/** Compute font size in px for blocks based on total count */
+/** Compute font size — wider blocks allow larger text */
 export function blockFontSize(total: number): number {
-  if (total <= 20) return 13
-  if (total <= 40) return 11
-  if (total <= 60) return 10
-  if (total <= 80) return 9
-  return 8
+  if (total <= 16) return 14
+  if (total <= 32) return 13
+  if (total <= 50) return 12
+  if (total <= 70) return 11
+  return 10
 }
 
 /** Compute grid gap in Tailwind class based on total blocks */

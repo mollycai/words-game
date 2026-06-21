@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Page Design — 方案预览</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0a14;
+    color: #e0e0e0;
+    font-family: 'Courier New', monospace;
+    min-height: 100vh;
+  }
+
+  .preview-header {
+    text-align: center;
+    padding: 32px 16px 8px;
+  }
+  .preview-header h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    color: #06D6A0;
+    text-shadow: 0 0 10px rgba(6,214,160,0.6), 0 0 30px rgba(6,214,160,0.3);
+    margin-bottom: 6px;
+  }
+  .preview-header p { color: #666; font-size: 11px; }
+
+  .section-label {
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: #8B83F0;
+    text-shadow: 0 0 8px rgba(139,131,240,0.4);
+    padding: 36px 16px 16px;
+    letter-spacing: 2px;
+  }
+
+  /* ==================== SHARED ==================== */
+  .demo-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px 32px;
+  }
+
+  /* CRT scanline helper */
+  .scanlines {
+    position: relative;
+    overflow: hidden;
+  }
+  .scanlines::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0px, transparent 2px, rgba(0,0,0,0.06) 4px);
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  /* ==================== APPROACH A: DARK ARCADE CABINET ==================== */
+  .a-game {
+    height: 500px;
+    background: #08080f;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #1a1a2e;
+    position: relative;
+  }
+
+  /* Toolbar */
+  .a-toolbar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 14px;
+    background: #0d0d1a;
+    border-bottom: 1px solid #1a1a30;
+    z-index: 2; position: relative;
+  }
+  .a-toolbar .a-status {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .a-toolbar .a-status-dot {
+    width: 7px; height: 7px;
+    background: #4FE8BA;
+    box-shadow: 0 0 8px #4FE8BA;
+    animation: pulse-dot 1.2s infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .a-toolbar .a-status-text {
+    font-family: 'Courier New',monospace;
+    font-size: 10px; font-weight: 700;
+    color: #4FE8BA;
+    text-shadow: 0 0 6px rgba(79,232,186,0.4);
+    letter-spacing: 1px;
+  }
+  .a-toolbar .a-sep {
+    width: 1px; height: 22px;
+    background: #1a1a30;
+  }
+  .a-tb-btn {
+    padding: 6px 12px;
+    font-family: 'Courier New',monospace;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .a-tb-btn.pause {
+    color: #FCC364; border: 1px solid #FCC36430;
+  }
+  .a-tb-btn.pause:hover { border-color: #FCC364; box-shadow: 0 0 8px rgba(252,195,100,0.3); }
+  .a-tb-btn.quit {
+    color: #888; border: 1px solid #333;
+    font-size: 9px;
+  }
+  .a-tb-btn.quit:hover { border-color: #FF3B30; color: #FF3B30; }
+  .a-tb-btn.back {
+    color: #666; border: 1px solid #2a2a3a;
+    margin-left: auto;
+  }
+  .a-tb-btn.back:hover { border-color: #666; color: #aaa; }
+
+  /* Player columns */
+  .a-players {
+    flex: 1; display: flex;
+    position: relative; z-index: 1;
+  }
+  .a-player {
+    flex: 1;
+    display: flex; flex-direction: column;
+    border-right: 1px solid #1a1a30;
+    min-width: 0;
+  }
+  .a-player:last-child { border-right: none; }
+
+  /* Player timer */
+  .a-timer {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 12px;
+    border-bottom: 1px solid #1a1a30;
+    background: rgba(255,255,255,0.02);
+    flex-shrink: 0;
+  }
+  .a-timer .a-t-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 6px currentColor;
+  }
+  .a-timer .a-t-name {
+    font-family: 'Courier New',monospace;
+    font-size: 10px; font-weight: 700;
+    color: #ccc;
+    letter-spacing: 1px;
+  }
+  .a-timer .a-t-time {
+    margin-left: auto;
+    font-family: 'Courier New',monospace;
+    font-size: 12px; font-weight: 700;
+    color: #aaa;
+  }
+
+  /* Block grid */
+  .a-grid {
+    flex: 1; padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 6px;
+    overflow: hidden;
+  }
+
+  /* Word block — dark arcade style */
+  .a-block {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    font-family: 'Courier New',monospace;
+    font-size: 10px; font-weight: 700;
+    color: #ccc;
+    background: #0d0d1a;
+    border: 1px solid #2a2a3a;
+    cursor: pointer;
+    transition: all 0.15s;
+    padding: 2px 4px;
+    line-height: 1.2;
+    word-break: break-all;
+  }
+  .a-block:hover {
+    border-color: #555;
+    color: #fff;
+  }
+  .a-block.english {
+    border-color: rgba(139,131,240,0.25);
+    background: rgba(139,131,240,0.04);
+  }
+  .a-block.chinese {
+    border-color: rgba(79,232,186,0.2);
+    background: rgba(79,232,186,0.03);
+  }
+  .a-block.selected {
+    background: #8B83F0 !important;
+    border-color: #8B83F0 !important;
+    color: #fff !important;
+    box-shadow: 0 0 14px rgba(139,131,240,0.5), 0 0 4px #8B83F0;
+    transform: scale(1.06);
+    z-index: 5;
+  }
+  .a-block.matched {
+    opacity: 0; transform: scale(0.5);
+    pointer-events: none;
+    transition: all 0.3s ease-out;
+  }
+  .a-block.wrong {
+    border-color: #FF3B30 !important;
+    background: rgba(255,59,48,0.12) !important;
+    color: #FF3B30 !important;
+    box-shadow: 0 0 10px rgba(255,59,48,0.4);
+    animation: shake 0.4s ease;
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-4px); }
+    40% { transform: translateX(4px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+  }
+
+  /* Finished banner */
+  .a-done {
+    text-align: center; padding: 8px;
+    font-family: 'Courier New',monospace;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1px;
+    border-top: 1px solid rgba(79,232,186,0.2);
+    background: rgba(79,232,186,0.04);
+  }
+
+  /* Countdown overlay — demo */
+  .a-countdown {
+    position: absolute; inset: 0; z-index: 60;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.7);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 80px;
+    color: #fff;
+    text-shadow: 0 0 30px rgba(139,131,240,0.6), 0 0 60px rgba(139,131,240,0.3);
+  }
+
+  /* ==================== APPROACH B: NEON ARENA ==================== */
+  .b-game {
+    height: 500px;
+    background: #050510;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #1a1a30;
+    position: relative;
+  }
+  .b-toolbar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid #1a1a2e;
+    z-index: 2; position: relative;
+  }
+  .b-toolbar .b-status {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: #4FE8BA;
+    text-shadow: 0 0 10px #4FE8BA;
+    letter-spacing: 2px;
+  }
+  .b-tb-btn {
+    padding: 6px 14px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+  }
+  .b-tb-btn.pause {
+    color: #FCC364; border: 1px solid #FCC36440;
+  }
+  .b-tb-btn.pause:hover { box-shadow: 0 0 12px rgba(252,195,100,0.4); }
+  .b-tb-btn.back {
+    color: #555; border: 1px solid #2a2a3a;
+    margin-left: auto;
+  }
+
+  .b-players {
+    flex: 1; display: flex;
+    position: relative; z-index: 1;
+  }
+  .b-player {
+    flex: 1;
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  /* Neon vertical dividers */
+  .b-player::after {
+    content: '';
+    position: absolute; right: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, rgba(139,131,240,0.4), rgba(139,131,240,0.15), transparent);
+    box-shadow: 0 0 8px rgba(139,131,240,0.2);
+  }
+  .b-player:last-child::after { display: none; }
+
+  .b-timer {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .b-t-dot {
+    width: 8px; height: 8px;
+    box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+  }
+  .b-t-name {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: #ccc;
+    letter-spacing: 1px;
+  }
+  .b-t-time {
+    margin-left: auto;
+    font-family: 'Courier New',monospace;
+    font-size: 11px; font-weight: 700;
+    color: #eee;
+    text-shadow: 0 0 8px rgba(255,255,255,0.3);
+  }
+
+  .b-grid {
+    flex: 1; padding: 6px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 5px;
+  }
+
+  .b-block {
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    font-family: 'Courier New',monospace;
+    font-size: 9px; font-weight: 700;
+    color: #bbb;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    transition: all 0.15s;
+    padding: 2px 4px;
+    line-height: 1.2;
+    word-break: break-all;
+  }
+  .b-block:hover {
+    border-color: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.04);
+  }
+  .b-block.english {
+    border-color: rgba(139,131,240,0.3);
+    box-shadow: inset 0 0 8px rgba(139,131,240,0.05);
+  }
+  .b-block.chinese {
+    border-color: rgba(79,232,186,0.25);
+    box-shadow: inset 0 0 8px rgba(79,232,186,0.04);
+  }
+  .b-block.selected {
+    background: #8B83F0 !important;
+    border-color: #fff !important;
+    color: #fff !important;
+    box-shadow: 0 0 20px rgba(139,131,240,0.7), 0 0 40px rgba(139,131,240,0.4), 0 0 2px #fff;
+    transform: scale(1.08);
+    z-index: 5;
+    text-shadow: 0 0 4px rgba(255,255,255,0.5);
+  }
+  .b-block.matched {
+    opacity: 0; transform: scale(0.3) rotate(10deg);
+    pointer-events: none;
+    transition: all 0.25s ease-out;
+  }
+  .b-block.wrong {
+    border-color: #FF3B30 !important;
+    background: rgba(255,59,48,0.15) !important;
+    color: #FF3B30 !important;
+    box-shadow: 0 0 16px rgba(255,59,48,0.5), 0 0 2px #FF3B30;
+    animation: shake 0.4s ease;
+  }
+
+  /* ==================== APPROACH C: RETRO SPLIT-SCREEN ==================== */
+  .c-game {
+    height: 500px;
+    background: #0a0a14;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .c-toolbar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 14px;
+    background: #111122;
+    border-bottom: 3px double #2a2a40;
+    z-index: 2; position: relative;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: #888;
+  }
+
+  .c-players {
+    flex: 1; display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: #06060c;
+    position: relative; z-index: 1;
+  }
+  /* Each player as a separate "CRT monitor" */
+  .c-player {
+    flex: 1;
+    display: flex; flex-direction: column;
+    background: #0a0a14;
+    border: 3px solid #1a1a30;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.6), 0 0 10px rgba(0,0,0,0.5);
+    position: relative;
+  }
+  /* CRT bezel scanlines per monitor */
+  .c-player::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0px, transparent 2px, rgba(0,0,0,0.08) 4px);
+    pointer-events: none;
+    z-index: 20;
+  }
+  /* Power LED on each monitor */
+  .c-player::before {
+    content: '';
+    position: absolute; top: 6px; right: 8px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    z-index: 25;
+    box-shadow: 0 0 5px currentColor;
+  }
+  .c-player.p1::before { background: #FF3B30; color: #FF3B30; }
+  .c-player.p2::before { background: #4B3FD9; color: #4B3FD9; }
+  .c-player.p3::before { background: #06D6A0; color: #06D6A0; }
+
+  .c-timer {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 10px;
+    border-bottom: 1px solid #1a1a30;
+    position: relative; z-index: 1;
+  }
+  .c-t-dot { width: 8px; height: 8px; }
+  .c-t-name {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    color: #bbb;
+    letter-spacing: 1px;
+  }
+  .c-t-time {
+    margin-left: auto;
+    font-family: 'Courier New',monospace;
+    font-size: 10px; font-weight: 700;
+    color: #ddd;
+  }
+  .c-grid {
+    flex: 1; padding: 4px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 3px;
+    position: relative; z-index: 1;
+  }
+  .c-block {
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    font-family: 'Courier New',monospace;
+    font-size: 9px; font-weight: 700;
+    color: #bbb;
+    background: #0d0d1a;
+    border: 2px solid #1a1a30;
+    cursor: pointer;
+    padding: 2px 3px;
+    line-height: 1.2;
+    word-break: break-all;
+    image-rendering: pixelated;
+  }
+  .c-block.english { border-style: solid; border-color: rgba(139,131,240,0.3); }
+  .c-block.chinese { border-style: dashed; border-color: rgba(79,232,186,0.25); }
+  .c-block.selected {
+    background: #8B83F0 !important;
+    border-color: #8B83F0 !important;
+    border-style: solid !important;
+    color: #fff !important;
+    box-shadow: 0 0 12px rgba(139,131,240,0.5), inset 0 0 8px rgba(255,255,255,0.1);
+    transform: scale(1.05);
+    z-index: 5;
+  }
+  .c-block.matched {
+    opacity: 0; transform: scale(0);
+    pointer-events: none;
+    transition: all 0.25s;
+  }
+  .c-block.wrong {
+    border-color: #FF3B30 !important;
+    background: rgba(255,59,48,0.15) !important;
+    color: #FF3B30 !important;
+    animation: shake 0.4s ease;
+  }
+
+  /* ==================== MISC ==================== */
+  .color-demo { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
+  .color-chip {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    box-shadow: 0 0 8px currentColor;
+  }
+</style>
+</head>
+<body>
+
+<div class="preview-header">
+  <h1>GAME PAGE DESIGN</h1>
+  <p>比赛页面 · 三种设计方案</p>
+</div>
+
+<!-- ==================== APPROACH A ==================== -->
+<div class="section-label">▸ 方案 A：暗黑街机框体 (Dark Arcade Cabinet) ◂</div>
+<div class="demo-wrap">
+  <p style="font-size:10px;color:#666;margin-bottom:10px;text-align:center;">
+    深色背景 + CRT扫描线 · 单词方块含类型色边 · 选中霓虹发光 · 紧凑型等宽字体工具栏
+  </p>
+
+  <div class="a-game scanlines">
+    <!-- Toolbar -->
+    <div class="a-toolbar">
+      <div class="a-status">
+        <span class="a-status-dot"></span>
+        <span class="a-status-text">PLAYING</span>
+      </div>
+      <span class="a-sep"></span>
+      <button class="a-tb-btn pause">⏸ 暂停</button>
+      <button class="a-tb-btn quit">P1 弃权</button>
+      <button class="a-tb-btn quit">P2 弃权</button>
+      <button class="a-tb-btn back">← 返回</button>
+    </div>
+
+    <!-- Players -->
+    <div class="a-players">
+      <!-- Player 1 -->
+      <div class="a-player">
+        <div class="a-timer">
+          <span class="a-t-dot" style="background:#FF3B30;color:#FF3B30;"></span>
+          <span class="a-t-name">P1</span>
+          <span class="a-t-time">00:12.3</span>
+        </div>
+        <div class="a-grid">
+          <div class="a-block english">apple</div>
+          <div class="a-block chinese">苹果</div>
+          <div class="a-block english selected">book</div>
+          <div class="a-block chinese">书</div>
+          <div class="a-block english wrong">cat</div>
+          <div class="a-block chinese">猫</div>
+          <div class="a-block english matched" style="opacity:0;transform:scale(0.5);">dog</div>
+          <div class="a-block chinese matched" style="opacity:0;transform:scale(0.5);">狗</div>
+          <div class="a-block english">egg</div>
+          <div class="a-block chinese">蛋</div>
+          <div class="a-block english">fish</div>
+          <div class="a-block chinese">鱼</div>
+          <div class="a-block english">girl</div>
+          <div class="a-block chinese">女孩</div>
+          <div class="a-block english">hand</div>
+          <div class="a-block chinese">手</div>
+        </div>
+      </div>
+
+      <!-- Player 2 -->
+      <div class="a-player">
+        <div class="a-timer">
+          <span class="a-t-dot" style="background:#4B3FD9;color:#4B3FD9;"></span>
+          <span class="a-t-name">P2</span>
+          <span class="a-t-time">00:18.7</span>
+        </div>
+        <div class="a-grid">
+          <div class="a-block english">apple</div>
+          <div class="a-block chinese selected">苹果</div>
+          <div class="a-block english">book</div>
+          <div class="a-block chinese">书</div>
+          <div class="a-block english">cat</div>
+          <div class="a-block chinese">猫</div>
+          <div class="a-block english">dog</div>
+          <div class="a-block chinese">狗</div>
+          <div class="a-block english">egg</div>
+          <div class="a-block chinese">蛋</div>
+          <div class="a-block english">fish</div>
+          <div class="a-block chinese">鱼</div>
+          <div class="a-block english">girl</div>
+          <div class="a-block chinese">女孩</div>
+          <div class="a-block english">hand</div>
+          <div class="a-block chinese">手</div>
+        </div>
+        <div class="a-done" style="color:#4FE8BA;text-shadow:0 0 6px rgba(79,232,186,0.3);">
+          ✓ ALL CLEAR!
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== APPROACH B ==================== -->
+<div class="section-label">▸ 方案 B：霓虹竞技场 (Neon Arena) ◂</div>
+<div class="demo-wrap">
+  <p style="font-size:10px;color:#666;margin-bottom:10px;text-align:center;">
+    Press Start 2P 字体 · 强力霓虹发光态 · 垂直霓虹分隔线 · 更亮的选中效果
+  </p>
+
+  <div class="b-game">
+    <div class="b-toolbar">
+      <div class="b-status">◉ IN GAME</div>
+      <button class="b-tb-btn pause">⏸ PAUSE</button>
+      <button class="b-tb-btn pause" style="color:#888;border-color:#333;">P1 GIVE UP</button>
+      <button class="b-tb-btn pause" style="color:#888;border-color:#333;">P2 GIVE UP</button>
+      <button class="b-tb-btn back">← BACK</button>
+    </div>
+    <div class="b-players">
+      <div class="b-player" style="border-right:none;">
+        <div class="b-timer">
+          <span class="b-t-dot" style="background:#FF3B30;color:#FF3B30;"></span>
+          <span class="b-t-name">PLAYER_1</span>
+          <span class="b-t-time">00:12.3</span>
+        </div>
+        <div class="b-grid">
+          <div class="b-block english">apple</div>
+          <div class="b-block chinese">苹果</div>
+          <div class="b-block english selected">book</div>
+          <div class="b-block chinese">书</div>
+          <div class="b-block english wrong">cat</div>
+          <div class="b-block chinese">猫</div>
+          <div class="b-block english">dog</div>
+          <div class="b-block chinese">狗</div>
+          <div class="b-block english">egg</div>
+          <div class="b-block chinese">蛋</div>
+          <div class="b-block english">fish</div>
+          <div class="b-block chinese">鱼</div>
+          <div class="b-block english">girl</div>
+          <div class="b-block chinese">女孩</div>
+          <div class="b-block english">hand</div>
+          <div class="b-block chinese">手</div>
+        </div>
+      </div>
+      <div class="b-player">
+        <div class="b-timer">
+          <span class="b-t-dot" style="background:#4B3FD9;color:#4B3FD9;"></span>
+          <span class="b-t-name">PLAYER_2</span>
+          <span class="b-t-time">00:18.7</span>
+        </div>
+        <div class="b-grid">
+          <div class="b-block english">apple</div>
+          <div class="b-block chinese selected">苹果</div>
+          <div class="b-block english">book</div>
+          <div class="b-block chinese">书</div>
+          <div class="b-block english">cat</div>
+          <div class="b-block chinese">猫</div>
+          <div class="b-block english">dog</div>
+          <div class="b-block chinese">狗</div>
+          <div class="b-block english">egg</div>
+          <div class="b-block chinese">蛋</div>
+          <div class="b-block english">fish</div>
+          <div class="b-block chinese">鱼</div>
+          <div class="b-block english">girl</div>
+          <div class="b-block chinese">女孩</div>
+          <div class="b-block english">hand</div>
+          <div class="b-block chinese">手</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== APPROACH C ==================== -->
+<div class="section-label">▸ 方案 C：复古分屏对战 (Retro Split-Screen) ◂</div>
+<div class="demo-wrap">
+  <p style="font-size:10px;color:#666;margin-bottom:10px;text-align:center;">
+    每位玩家独立CRT显示器边框 · 独立scanline · 电源指示灯 · 像素边框 · 双线分割
+  </p>
+
+  <div class="c-game">
+    <div class="c-toolbar">
+      ◉ PLAYING &nbsp;|&nbsp; [PAUSE] &nbsp; [P1 QUIT] &nbsp; [P2 QUIT] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [← RETURN]
+    </div>
+    <div class="c-players">
+      <div class="c-player p1">
+        <div class="c-timer">
+          <span class="c-t-dot" style="background:#FF3B30;"></span>
+          <span class="c-t-name">1P</span>
+          <span class="c-t-time">00:12.3</span>
+        </div>
+        <div class="c-grid">
+          <div class="c-block english">apple</div>
+          <div class="c-block chinese">苹果</div>
+          <div class="c-block english selected">book</div>
+          <div class="c-block chinese">书</div>
+          <div class="c-block english wrong">cat</div>
+          <div class="c-block chinese">猫</div>
+          <div class="c-block english">dog</div>
+          <div class="c-block chinese">狗</div>
+          <div class="c-block english">egg</div>
+          <div class="c-block chinese">蛋</div>
+          <div class="c-block english">fish</div>
+          <div class="c-block chinese">鱼</div>
+          <div class="c-block english">girl</div>
+          <div class="c-block chinese">女孩</div>
+          <div class="c-block english">hand</div>
+          <div class="c-block chinese">手</div>
+        </div>
+      </div>
+      <div class="c-player p2">
+        <div class="c-timer">
+          <span class="c-t-dot" style="background:#4B3FD9;"></span>
+          <span class="c-t-name">2P</span>
+          <span class="c-t-time">00:18.7</span>
+        </div>
+        <div class="c-grid">
+          <div class="c-block english">apple</div>
+          <div class="c-block chinese selected">苹果</div>
+          <div class="c-block english">book</div>
+          <div class="c-block chinese">书</div>
+          <div class="c-block english">cat</div>
+          <div class="c-block chinese">猫</div>
+          <div class="c-block english">dog</div>
+          <div class="c-block chinese">狗</div>
+          <div class="c-block english">egg</div>
+          <div class="c-block chinese">蛋</div>
+          <div class="c-block english">fish</div>
+          <div class="c-block chinese">鱼</div>
+          <div class="c-block english">girl</div>
+          <div class="c-block chinese">女孩</div>
+          <div class="c-block english">hand</div>
+          <div class="c-block chinese">手</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Legend -->
+<div class="section-label">▸ 图例 ◂</div>
+<div class="demo-wrap" style="text-align:center;">
+  <div style="display:inline-flex;gap:20px;font-size:10px;font-family:monospace;color:#888;flex-wrap:wrap;justify-content:center;">
+    <span>
+      <span style="display:inline-block;width:16px;height:16px;background:#0d0d1a;border:1px solid rgba(139,131,240,0.3);vertical-align:middle;margin-right:4px;"></span>
+      英文词 (English)
+    </span>
+    <span>
+      <span style="display:inline-block;width:16px;height:16px;background:#0d0d1a;border:1px solid rgba(79,232,186,0.2);vertical-align:middle;margin-right:4px;"></span>
+      中文词 (Chinese)
+    </span>
+    <span>
+      <span style="display:inline-block;width:16px;height:16px;background:#8B83F0;vertical-align:middle;margin-right:4px;box-shadow:0 0 6px #8B83F0;"></span>
+      选中 (Selected)
+    </span>
+    <span>
+      <span style="display:inline-block;width:16px;height:16px;background:rgba(255,59,48,0.15);border:1px solid #FF3B30;vertical-align:middle;margin-right:4px;box-shadow:0 0 6px rgba(255,59,48,0.4);"></span>
+      错误 (Wrong)
+    </span>
+    <span>
+      <span style="display:inline-block;width:16px;height:16px;vertical-align:middle;margin-right:4px;opacity:0.3;">💨</span>
+      已消除 (Matched)
+    </span>
+  </div>
+</div>
+
+</body>
+</html>

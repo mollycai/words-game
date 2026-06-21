@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WordBlock Design — 方案预览</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0a14;
+    color: #e0e0e0;
+    font-family: 'Courier New', monospace;
+    min-height: 100vh;
+  }
+
+  .preview-header {
+    text-align: center;
+    padding: 28px 16px 4px;
+  }
+  .preview-header h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 13px;
+    color: #06D6A0;
+    text-shadow: 0 0 10px rgba(6,214,160,0.6);
+    margin-bottom: 6px;
+  }
+  .preview-header p { color: #666; font-size: 10px; }
+
+  .section-label {
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: #8B83F0;
+    text-shadow: 0 0 8px rgba(139,131,240,0.4);
+    padding: 32px 16px 12px;
+    letter-spacing: 2px;
+  }
+
+  .demo-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 16px 24px;
+  }
+
+  /* Grid for showing blocks */
+  .block-grid {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 16px 0;
+  }
+
+  /* Base block */
+  .block {
+    width: 100px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 4px 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    word-break: break-all;
+  }
+
+  /* Labels under blocks */
+  .block-label {
+    font-size: 9px;
+    color: #666;
+    text-align: center;
+    margin-top: 6px;
+    font-family: monospace;
+  }
+
+  /* Current style demo */
+  .current-english {
+    color: #bbb;
+    background: rgba(139,131,240,0.04);
+    border: 1px solid rgba(139,131,240,0.3);
+    box-shadow: inset 0 0 8px rgba(139,131,240,0.05);
+  }
+  .current-chinese {
+    color: #bbb;
+    background: rgba(79,232,186,0.03);
+    border: 1px solid rgba(79,232,186,0.25);
+    box-shadow: inset 0 0 8px rgba(79,232,186,0.04);
+  }
+
+  /* Hover effect for current */
+  .current-english:hover { border-color: rgba(255,255,255,0.2); color: #fff; background: rgba(255,255,255,0.04); }
+  .current-chinese:hover { border-color: rgba(255,255,255,0.2); color: #fff; background: rgba(255,255,255,0.04); }
+
+  /* ---- OPTION 1: Thicker borders + more saturated ---- */
+  .opt1-english {
+    color: #ccc;
+    background: #0d0d1a;
+    border: 2px solid rgba(139,131,240,0.45);
+  }
+  .opt1-chinese {
+    color: #ccc;
+    background: #0d0d1a;
+    border: 2px solid rgba(79,232,186,0.4);
+  }
+  .opt1-english:hover { border-color: rgba(139,131,240,0.7); color: #fff; box-shadow: 0 0 8px rgba(139,131,240,0.15); }
+  .opt1-chinese:hover { border-color: rgba(79,232,186,0.65); color: #fff; box-shadow: 0 0 8px rgba(79,232,186,0.15); }
+
+  /* ---- OPTION 2: DIP-switch style (matching setup page) ---- */
+  .opt2-english {
+    color: #aaa;
+    background: #0a0a16;
+    border: 2px solid rgba(139,131,240,0.5);
+  }
+  .opt2-chinese {
+    color: #aaa;
+    background: #0a0a16;
+    border: 2px solid rgba(79,232,186,0.45);
+  }
+  .opt2-english:hover { border-color: #8B83F0; color: #fff; background: rgba(139,131,240,0.08); box-shadow: 0 0 8px rgba(139,131,240,0.2); }
+  .opt2-chinese:hover { border-color: #4FE8BA; color: #fff; background: rgba(79,232,186,0.08); box-shadow: 0 0 8px rgba(79,232,186,0.2); }
+
+  /* ---- OPTION 3: Filled tint backgrounds ---- */
+  .opt3-english {
+    color: #d5d0ff;
+    background: rgba(139,131,240,0.1);
+    border: 1px solid rgba(139,131,240,0.35);
+  }
+  .opt3-chinese {
+    color: #c0ffe8;
+    background: rgba(79,232,186,0.09);
+    border: 1px solid rgba(79,232,186,0.3);
+  }
+  .opt3-english:hover { background: rgba(139,131,240,0.18); color: #fff; border-color: rgba(139,131,240,0.6); }
+  .opt3-chinese:hover { background: rgba(79,232,186,0.16); color: #fff; border-color: rgba(79,232,186,0.55); }
+
+  /* ---- OPTION 4: Neon top-glow bar + border ---- */
+  .opt4-english {
+    color: #ccc;
+    background: #0d0d1a;
+    border: 2px solid rgba(139,131,240,0.3);
+    border-top: 3px solid rgba(139,131,240,0.7);
+    box-shadow: inset 0 8px 16px -8px rgba(139,131,240,0.08);
+  }
+  .opt4-chinese {
+    color: #ccc;
+    background: #0d0d1a;
+    border: 2px solid rgba(79,232,186,0.25);
+    border-top: 3px solid rgba(79,232,186,0.6);
+    box-shadow: inset 0 8px 16px -8px rgba(79,232,186,0.06);
+  }
+  .opt4-english:hover { border-color: rgba(139,131,240,0.6); border-top-color: #8B83F0; color: #fff; }
+  .opt4-chinese:hover { border-color: rgba(79,232,186,0.5); border-top-color: #4FE8BA; color: #fff; }
+
+  /* ---- OPTION 5: Pixel border with corner accents ---- */
+  .opt5-english {
+    color: #ccc;
+    background: #0d0d1a;
+    border: 2px solid rgba(139,131,240,0.4);
+    position: relative;
+  }
+  .opt5-english::before {
+    content: '';
+    position: absolute; top: -2px; left: 6px; right: 6px; height: 2px;
+    background: rgba(139,131,240,0.8);
+    box-shadow: 0 0 4px rgba(139,131,240,0.5);
+  }
+  .opt5-chinese {
+    color: #ccc;
+    background: #0d0d1a;
+    border: 2px solid rgba(79,232,186,0.35);
+    position: relative;
+  }
+  .opt5-chinese::before {
+    content: '';
+    position: absolute; top: -2px; left: 6px; right: 6px; height: 2px;
+    background: rgba(79,232,186,0.7);
+    box-shadow: 0 0 4px rgba(79,232,186,0.4);
+  }
+  .opt5-english:hover { border-color: rgba(139,131,240,0.7); color: #fff; }
+  .opt5-chinese:hover { border-color: rgba(79,232,186,0.6); color: #fff; }
+
+  /* Selected state (same across all) */
+  .selected {
+    background: #8B83F0 !important;
+    border-color: #8B83F0 !important;
+    border-top-width: 2px !important;
+    color: #fff !important;
+    box-shadow: 0 0 20px rgba(139,131,240,0.7), 0 0 40px rgba(139,131,240,0.4), 0 0 2px #fff !important;
+    transform: scale(1.08);
+    z-index: 5;
+  }
+  .selected::before { display: none; }
+
+  /* Wrong state */
+  .wrong {
+    border-color: #FF3B30 !important;
+    border-top-color: #FF3B30 !important;
+    background: rgba(255,59,48,0.12) !important;
+    color: #FF3B30 !important;
+    box-shadow: 0 0 16px rgba(255,59,48,0.5), 0 0 2px #FF3B30 !important;
+    animation: shake 0.4s ease;
+  }
+  .wrong::before { display: none; }
+
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 20%{transform:translateX(-4px)} 40%{transform:translateX(4px)} 60%{transform:translateX(-3px)} 80%{transform:translateX(3px)}
+  }
+
+  /* Pair layout: each pair is english+chinese */
+  .pair {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .note {
+    font-size: 9px;
+    color: #555;
+    text-align: center;
+    margin: 0 0 12px;
+    font-family: monospace;
+  }
+
+  /* Row label */
+  .row-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: #555;
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="preview-header">
+  <h1>WORD BLOCK DESIGN</h1>
+  <p>单词方块 · 默认态设计 · 6种方案</p>
+</div>
+
+<!-- CURRENT -->
+<div class="section-label">▸ CURRENT (当前线上版本) ◂</div>
+<div class="demo-wrap">
+  <p class="note">英文: 淡紫边框 rgba(139,131,240,0.3) + 极淡紫底 · 中文: 淡绿边框 rgba(79,232,186,0.25) — 对比度较低</p>
+  <div class="block-grid">
+    <div class="pair">
+      <div class="block current-english">apple</div><span class="block-label">English</span>
+    </div>
+    <div class="pair">
+      <div class="block current-chinese">苹果</div><span class="block-label">Chinese</span>
+    </div>
+    <div class="pair">
+      <div class="block current-english selected">book</div><span class="block-label">Selected</span>
+    </div>
+    <div class="pair">
+      <div class="block current-chinese wrong">猫</div><span class="block-label">Wrong</span>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 1 -->
+<div class="section-label">▸ OPTION 1：加粗边框 + 更高饱和度 ◂</div>
+<div class="demo-wrap">
+  <p class="note">2px 边框 · 透明度 0.45/0.4 · 深色底 #0d0d1a · 比当前方案明显但不过分</p>
+  <div class="block-grid">
+    <div class="pair">
+      <div class="block opt1-english">apple</div><span class="block-label">English</span>
+    </div>
+    <div class="pair">
+      <div class="block opt1-chinese">苹果</div><span class="block-label">Chinese</span>
+    </div>
+    <div class="pair">
+      <div class="block opt1-english selected">book</div><span class="block-label">Selected</span>
+    </div>
+    <div class="pair">
+      <div class="block opt1-chinese wrong">猫</div><span class="block-label">Wrong</span>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 2 -->
+<div class="section-label">▸ OPTION 2：DIP-Switch 风格 (对齐设置页按钮) ◂</div>
+<div class="demo-wrap">
+  <p class="note">2px 边框 + #0a0a16 底 (与设置页人数按钮一致) · 较亮边框色 · hover 同色霓虹</p>
+  <div class="block-grid">
+    <div class="pair">
+      <div class="block opt2-english">apple</div><span class="block-label">English</span>
+    </div>
+    <div class="pair">
+      <div class="block opt2-chinese">苹果</div><span class="block-label">Chinese</span>
+    </div>
+    <div class="pair">
+      <div class="block opt2-english selected">book</div><span class="block-label">Selected</span>
+    </div>
+    <div class="pair">
+      <div class="block opt2-chinese wrong">猫</div><span class="block-label">Wrong</span>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 3 -->
+<div class="section-label">▸ OPTION 3：填充底色 (Filled Tint) ◂</div>
+<div class="demo-wrap">
+  <p class="note">保留薄边框 · 底色填充 10%/9% 不透明度 · 文字带色彩倾向 · 类型辨识度最高</p>
+  <div class="block-grid">
+    <div class="pair">
+      <div class="block opt3-english">apple</div><span class="block-label">English</span>
+    </div>
+    <div class="pair">
+      <div class="block opt3-chinese">苹果</div><span class="block-label">Chinese</span>
+    </div>
+    <div class="pair">
+      <div class="block opt3-english selected">book</div><span class="block-label">Selected</span>
+    </div>
+    <div class="pair">
+      <div class="block opt3-chinese wrong">猫</div><span class="block-label">Wrong</span>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 4 -->
+<div class="section-label">▸ OPTION 4：顶部霓虹条 + 边框 ◂</div>
+<div class="demo-wrap">
+  <p class="note">2px 边框 + 顶部 3px 粗霓虹条 · 类似 CRT 状态栏的顶部强调线 · 有方向感</p>
+  <div class="block-grid">
+    <div class="pair">
+      <div class="block opt4-english">apple</div><span class="block-label">English</span>
+    </div>
+    <div class="pair">
+      <div class="block opt4-chinese">苹果</div><span class="block-label">Chinese</span>
+    </div>
+    <div class="pair">
+      <div class="block opt4-english selected">book</div><span class="block-label">Selected</span>
+    </div>
+    <div class="pair">
+      <div class="block opt4-chinese wrong">猫</div><span class="block-label">Wrong</span>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 5 -->
+<div class="section-label">▸ OPTION 5：顶部发光横条 (Pixel Accent Bar) ◂</div>
+<div class="demo-wrap">
+  <p class="note">2px 边框 + 顶部 2px 发光横条 (::before) · 角落霓虹点缀 · 像素面板风格</p>
+  <div class="block-grid">
+    <div class="pair">
+      <div class="block opt5-english">apple</div><span class="block-label">English</span>
+    </div>
+    <div class="pair">
+      <div class="block opt5-chinese">苹果</div><span class="block-label">Chinese</span>
+    </div>
+    <div class="pair">
+      <div class="block opt5-english selected">book</div><span class="block-label">Selected</span>
+    </div>
+    <div class="pair">
+      <div class="block opt5-chinese wrong">猫</div><span class="block-label">Wrong</span>
+    </div>
+  </div>
+</div>
+
+<!-- Side-by-side comparison: All English variants -->
+<div class="section-label">▸ 横向对比：English 方块 ◂</div>
+<div class="demo-wrap">
+  <div class="block-grid" style="gap:8px;">
+    <div class="pair"><div class="block current-english">apple</div><span class="block-label" style="font-size:7px;">Current</span></div>
+    <div class="pair"><div class="block opt1-english">apple</div><span class="block-label" style="font-size:7px;">Opt 1</span></div>
+    <div class="pair"><div class="block opt2-english">apple</div><span class="block-label" style="font-size:7px;">Opt 2</span></div>
+    <div class="pair"><div class="block opt3-english">apple</div><span class="block-label" style="font-size:7px;">Opt 3</span></div>
+    <div class="pair"><div class="block opt4-english">apple</div><span class="block-label" style="font-size:7px;">Opt 4</span></div>
+    <div class="pair"><div class="block opt5-english">apple</div><span class="block-label" style="font-size:7px;">Opt 5</span></div>
+  </div>
+</div>
+
+<div class="section-label">▸ 横向对比：Chinese 方块 ◂</div>
+<div class="demo-wrap">
+  <div class="block-grid" style="gap:8px;">
+    <div class="pair"><div class="block current-chinese">苹果</div><span class="block-label" style="font-size:7px;">Current</span></div>
+    <div class="pair"><div class="block opt1-chinese">苹果</div><span class="block-label" style="font-size:7px;">Opt 1</span></div>
+    <div class="pair"><div class="block opt2-chinese">苹果</div><span class="block-label" style="font-size:7px;">Opt 2</span></div>
+    <div class="pair"><div class="block opt3-chinese">苹果</div><span class="block-label" style="font-size:7px;">Opt 3</span></div>
+    <div class="pair"><div class="block opt4-chinese">苹果</div><span class="block-label" style="font-size:7px;">Opt 4</span></div>
+    <div class="pair"><div class="block opt5-chinese">苹果</div><span class="block-label" style="font-size:7px;">Opt 5</span></div>
+  </div>
+</div>
+
+</body>
+</html>

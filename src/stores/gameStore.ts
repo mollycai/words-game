@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import type { GameStatus, PlayerState, Block } from '@/types'
 import { pickWords, buildBlocks, checkMatch, remainingBlocks } from '@/lib/gameLogic'
 
-const PLAYER_COLORS: Record<number, string> = { 1: '#4A90D9', 2: '#FF9500', 3: '#34C759' }
+const PLAYER_COLORS: Record<number, string> = { 1: '#4B3FD9', 2: '#FF3B30', 3: '#06D6A0' }
 
 interface SelectedBlock {
   playerId: number

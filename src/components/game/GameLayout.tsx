@@ -77,22 +77,37 @@ export default function GameLayout() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-surface-page overflow-hidden">
-      {/* Countdown overlay — highest z-index, covers everything */}
+    <div style={{
+      height: '100vh', display: 'flex', flexDirection: 'column',
+      background: '#050510',
+      overflow: 'hidden',
+    }}>
+      {/* Countdown overlay */}
       {status === 'countdown' && (
         <Countdown from={countdownValue} onFinish={finishCountdown} />
       )}
 
-      {/* Pause overlay — below toolbar so resume button is clickable */}
+      {/* Pause overlay */}
       {status === 'paused' && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 pointer-events-none">
-          <span className="text-white/80 text-5xl font-extrabold tracking-wider drop-shadow-lg">
-            ⏸ 已暂停
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 30,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(0,0,0,0.4)',
+          pointerEvents: 'none',
+        }}>
+          <span style={{
+            fontFamily: 'var(--font-press-start), monospace',
+            fontSize: 18,
+            color: '#FCC364',
+            textShadow: '0 0 20px rgba(252,195,100,0.6), 0 0 40px rgba(252,195,100,0.3)',
+            letterSpacing: 4,
+          }}>
+            ⏸ PAUSED
           </span>
         </div>
       )}
 
-      {/* Referee toolbar — z-40 so it stays above pause overlay */}
+      {/* Referee toolbar */}
       <RefereeToolbar
         status={status}
         players={players}
@@ -103,7 +118,7 @@ export default function GameLayout() {
       />
 
       {/* Player areas */}
-      <div className="flex-1 flex divide-x divide-gray-200">
+      <div style={{ flex: 1, display: 'flex' }}>
         {players.map((player) => (
           <PlayerArea
             key={player.id}

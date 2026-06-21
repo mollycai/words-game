@@ -26,12 +26,23 @@ export default function Countdown({ from = 3, onFinish }: CountdownProps) {
   const display = value === 0 ? 'GO!' : String(value)
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/50">
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 60,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: 'rgba(0,0,0,0.75)',
+    }}>
       <span
         key={value}
-        className={`text-[120px] font-extrabold animate-pop-in ${
-          value === 0 ? 'text-success-500' : 'text-white'
-        }`}
+        className="animate-pop-in"
+        style={{
+          fontFamily: 'var(--font-press-start), monospace',
+          fontSize: value === 0 ? 96 : 120,
+          fontWeight: 400,
+          color: value === 0 ? '#4FE8BA' : '#fff',
+          textShadow: value === 0
+            ? '0 0 40px rgba(79,232,186,0.7), 0 0 80px rgba(79,232,186,0.4), 0 0 4px #fff'
+            : '0 0 30px rgba(139,131,240,0.6), 0 0 60px rgba(139,131,240,0.3)',
+        }}
       >
         {display}
       </span>

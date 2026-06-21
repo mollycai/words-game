@@ -13,38 +13,90 @@ interface PlayerTimerProps {
 export default function PlayerTimer({ name, color, elapsed, finished, quit }: PlayerTimerProps) {
   return (
     <div
-      className="flex items-center gap-2 px-3 py-1.5 rounded-xl mx-2 mt-1.5 shadow-sm flex-shrink-0"
+      className="flex items-center gap-2 px-3 py-2 flex-shrink-0"
       style={{
-        background: `linear-gradient(135deg, ${color}12, ${color}08)`,
-        border: `1px solid ${color}30`,
+        borderBottom: '1px solid rgba(255,255,255,0.04)',
       }}
     >
-      <div className="w-3.5 h-3.5 rounded-full shadow-inner flex-shrink-0" style={{ backgroundColor: color }}>
-        <div className="w-full h-full rounded-full bg-white/30" />
-      </div>
-      <span className="font-bold text-sm text-text-main">{name}</span>
+      {/* Neon dot */}
+      <span style={{
+        width: 8, height: 8,
+        borderRadius: '50%',
+        background: quit ? '#555' : color,
+        boxShadow: quit ? 'none' : `0 0 10px ${color}, 0 0 20px ${color}`,
+        flexShrink: 0,
+      }} />
 
+      {/* Player name */}
+      <span style={{
+        fontFamily: 'var(--font-press-start), monospace',
+        fontSize: 7,
+        color: quit ? '#444' : '#ccc',
+        letterSpacing: 1,
+      }}>
+        {name}
+      </span>
+
+      {/* Quit badge */}
       {quit && (
-        <span className="ml-auto text-danger-500 text-xs font-semibold">弃权</span>
+        <span style={{
+          marginLeft: 'auto',
+          fontFamily: 'monospace',
+          fontSize: 9,
+          fontWeight: 700,
+          color: '#FF3B30',
+          textShadow: '0 0 6px rgba(255,59,48,0.3)',
+        }}>
+          弃权
+        </span>
       )}
 
+      {/* Running timer */}
       {!finished && !quit && (
-        <span className="ml-auto font-mono text-lg font-bold tabular-nums text-text-main">
+        <span style={{
+          marginLeft: 'auto',
+          fontFamily: '"Courier New", monospace',
+          fontSize: 11, fontWeight: 700,
+          color: '#eee',
+          textShadow: '0 0 8px rgba(255,255,255,0.3)',
+          fontVariantNumeric: 'tabular-nums',
+        }}>
           {formatTime(elapsed)}
         </span>
       )}
 
+      {/* Finished timer */}
       {finished && !quit && (
         <>
-          <span className="ml-auto font-mono text-lg font-bold tabular-nums text-success-600">
+          <span style={{
+            marginLeft: 'auto',
+            fontFamily: '"Courier New", monospace',
+            fontSize: 11, fontWeight: 700,
+            color: '#4FE8BA',
+            textShadow: '0 0 8px rgba(79,232,186,0.4)',
+          }}>
             {formatTime(elapsed)}
           </span>
-          <span className="text-success-500 text-xs font-semibold">✓</span>
+          <span style={{
+            fontFamily: 'monospace',
+            fontSize: 10, fontWeight: 700,
+            color: '#4FE8BA',
+            textShadow: '0 0 6px rgba(79,232,186,0.3)',
+          }}>
+            ✓
+          </span>
         </>
       )}
 
+      {/* Quit timer (strikethrough) */}
       {quit && (
-        <span className="font-mono text-base font-bold tabular-nums text-text-muted/40 line-through ml-1">
+        <span style={{
+          fontFamily: '"Courier New", monospace',
+          fontSize: 10, fontWeight: 700,
+          color: '#333',
+          textDecoration: 'line-through',
+          marginLeft: 4,
+        }}>
           {formatTime(elapsed)}
         </span>
       )}

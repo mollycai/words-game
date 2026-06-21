@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sound Effects — 爆炸音效方案</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0a0a14; color: #e0e0e0; font-family: 'Courier New', monospace; min-height: 100vh; }
+
+  .header {
+    text-align: center; padding: 28px 16px 4px;
+  }
+  .header h1 {
+    font-family: 'Press Start 2P', monospace; font-size: 13px;
+    color: #06D6A0; text-shadow: 0 0 10px rgba(6,214,160,0.6); margin-bottom: 6px;
+  }
+  .header p { color: #666; font-size: 10px; }
+
+  .section-label {
+    text-align: center;
+    font-family: 'Press Start 2P', monospace; font-size: 9px;
+    color: #8B83F0; text-shadow: 0 0 8px rgba(139,131,240,0.4);
+    padding: 28px 16px 8px; letter-spacing: 2px;
+  }
+  .note { font-size: 9px; color: #555; text-align: center; margin: 0 0 12px; font-family: monospace; }
+
+  .demo-wrap {
+    max-width: 680px; margin: 0 auto; padding: 0 16px 20px;
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  }
+  .sfx-card {
+    background: #0d0d1a; border: 1px solid #1a1a30;
+    padding: 16px 20px; text-align: center;
+    min-width: 180px; max-width: 200px;
+  }
+  .sfx-name {
+    font-family: 'Press Start 2P', monospace; font-size: 8px;
+    color: #ccc; margin-bottom: 6px; letter-spacing: 1px;
+  }
+  .sfx-desc {
+    font-size: 9px; color: #666; margin-bottom: 12px; line-height: 1.5;
+  }
+  .sfx-btn {
+    padding: 8px 20px;
+    font-family: 'Press Start 2P', monospace; font-size: 8px;
+    color: #4FE8BA; background: transparent;
+    border: 2px solid #4FE8BA30; cursor: pointer; transition: all 0.15s;
+    letter-spacing: 1px;
+  }
+  .sfx-btn:hover { border-color: #4FE8BA; box-shadow: 0 0 10px rgba(79,232,186,0.3); }
+  .sfx-btn:active { background: rgba(79,232,186,0.1); }
+  .sfx-btn.playing { border-color: #FCC364; color: #FCC364; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>MATCH SOUND EFFECTS</h1>
+  <p>消除爆炸音效 · 6种8-bit风格方案 · 点击试听</p>
+</div>
+
+<div class="section-label">▸ 点击按钮试听 ◂</div>
+<div class="demo-wrap" id="btnContainer"></div>
+
+<script>
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let ctx;
+
+function ensureCtx() {
+  if (!ctx) ctx = new AudioCtx();
+  if (ctx.state === 'suspended') ctx.resume();
+  return ctx;
+}
+
+// ── Helper: play a tone ──
+function tone(ctx, freq, start, dur, vol = 0.12, type = 'square', dest = null) {
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, start);
+  gain.gain.setValueAtTime(vol, start);
+  gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+  osc.connect(gain);
+  gain.connect(dest || ctx.destination);
+  osc.start(start);
+  osc.stop(start + dur);
+}
+
+// ── Noise burst ──
+function noise(ctx, start, dur, vol = 0.06) {
+  const len = ctx.sampleRate * dur;
+  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1);
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(vol, start);
+  gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'highpass';
+  filter.frequency.setValueAtTime(800, start);
+  src.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+  src.start(start);
+  src.stop(start + dur);
+}
+
+// ══════════ SOUND 1: Classic 8-bit Explosion ══════════
+function sfx1() {
+  const ctx = ensureCtx();
+  const t = ctx.currentTime;
+  // Rapid descending arpeggio
+  const notes = [1200, 900, 600, 350, 200, 100];
+  notes.forEach((f, i) => tone(ctx, f, t + i * 0.03, 0.12, 0.08, 'square'));
+  noise(ctx, t, 0.18, 0.06);
+}
+
+// ══════════ SOUND 2: Arcade Coin/Chime ══════════
+function sfx2() {
+  const ctx = ensureCtx();
+  const t = ctx.currentTime;
+  // Ascending chime
+  [523, 659, 784, 1047].forEach((f, i) => {
+    tone(ctx, f, t + i * 0.05, 0.15, 0.07, 'square');
+  });
+  // Sparkle high note
+  tone(ctx, 1319, t + 0.2, 0.2, 0.05, 'square');
+}
+
+// ══════════ SOUND 3: Deep Impact Boom ══════════
+function sfx3() {
+  const ctx = ensureCtx();
+  const t = ctx.currentTime;
+  // Low boom
+  tone(ctx, 80, t, 0.2, 0.15, 'sine');
+  tone(ctx, 60, t + 0.02, 0.22, 0.12, 'triangle');
+  // Debris
+  noise(ctx, t, 0.12, 0.05);
+  // Faint high fragments
+  [400, 300, 200, 150].forEach((f, i) => tone(ctx, f, t + 0.05 + i * 0.03, 0.1, 0.03, 'square'));
+}
+
+// ══════════ SOUND 4: Pixel Shatter ══════════
+function sfx4() {
+  const ctx = ensureCtx();
+  const t = ctx.currentTime;
+  // Many tiny fragments at once
+  for (let i = 0; i < 12; i++) {
+    const freq = 200 + Math.random() * 1500;
+    const delay = Math.random() * 0.04;
+    const dur = 0.05 + Math.random() * 0.1;
+    tone(ctx, freq, t + delay, dur, 0.04, 'square');
+  }
+  noise(ctx, t, 0.1, 0.04);
+  // Short high ring
+  tone(ctx, 1800, t, 0.08, 0.05, 'square');
+}
+
+// ══════════ SOUND 5: Retro Laser Zap ══════════
+function sfx5() {
+  const ctx = ensureCtx();
+  const t = ctx.currentTime;
+  // Frequency sweep down
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(1500, t);
+  osc.frequency.exponentialRampToValueAtTime(80, t + 0.15);
+  gain.gain.setValueAtTime(0.08, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + 0.15);
+  // Tiny crackle
+  noise(ctx, t + 0.05, 0.08, 0.03);
+}
+
+// ══════════ SOUND 6: Double Pop Match ══════════
+function sfx6() {
+  const ctx = ensureCtx();
+  const t = ctx.currentTime;
+  // Two quick pops (representing two blocks matching)
+  tone(ctx, 800, t, 0.06, 0.1, 'square');
+  tone(ctx, 600, t + 0.04, 0.08, 0.08, 'square');
+  // Rising confirmation
+  tone(ctx, 900, t + 0.1, 0.1, 0.06, 'square');
+  tone(ctx, 1100, t + 0.15, 0.15, 0.07, 'square');
+  // Tiny sparkle
+  tone(ctx, 1600, t + 0.18, 0.12, 0.03, 'square');
+}
+
+const sounds = [
+  { name: '8-BIT EXPLOSION', desc: '经典8-bit爆炸 下行琶音+噪声', fn: sfx1 },
+  { name: 'ARCADE CHIME',    desc: '街机水晶音 上行和音叮咚', fn: sfx2 },
+  { name: 'DEEP BOOM',       desc: '低沉轰鸣 重低音+碎片', fn: sfx3 },
+  { name: 'PIXEL SHATTER',   desc: '像素碎裂 12碎片同时爆散', fn: sfx4 },
+  { name: 'LASER ZAP',       desc: '激光扫频 高频→低频扫过', fn: sfx5 },
+  { name: 'DOUBLE POP',      desc: '双爆确认 两声短促+上升确认音', fn: sfx6 },
+];
+
+// ── Render buttons ──
+const container = document.getElementById('btnContainer');
+sounds.forEach((s) => {
+  const card = document.createElement('div');
+  card.className = 'sfx-card';
+  card.innerHTML = `
+    <div class="sfx-name">${s.name}</div>
+    <div class="sfx-desc">${s.desc}</div>
+    <button class="sfx-btn">▶ PLAY</button>
+  `;
+  const btn = card.querySelector('.sfx-btn');
+  btn.addEventListener('click', () => {
+    btn.textContent = '● PLAYING';
+    btn.classList.add('playing');
+    s.fn();
+    setTimeout(() => {
+      btn.textContent = '▶ PLAY';
+      btn.classList.remove('playing');
+    }, 400);
+  });
+  container.appendChild(card);
+});
+</script>
+</body>
+</html>

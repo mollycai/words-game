@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import type { PlayerState, GameStatus } from '@/types'
-import Button from '@/components/ui/Button'
 import Modal from '@/components/ui/Modal'
 
 interface RefereeToolbarProps {
@@ -23,46 +22,136 @@ export default function RefereeToolbar({ status, players, onPause, onResume, onQ
 
   return (
     <>
-      <div className="relative z-40 bg-white/90 backdrop-blur border-b border-gray-200 px-4 py-3 flex items-center gap-3 flex-wrap shadow-sm">
-        {/* Game status indicator */}
-        <div className="flex items-center gap-2 mr-2">
-          <div className={`w-2.5 h-2.5 rounded-full ${isPlaying ? 'bg-success-500 animate-pulse' : isPaused ? 'bg-warning-500' : 'bg-gray-300'}`} />
-          <span className="text-sm font-semibold text-text-main">
-            {isPlaying ? '比赛中' : isPaused ? '已暂停' : '准备中'}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 12,
+        padding: '8px 14px',
+        background: '#0d0d1a',
+        borderBottom: '1px solid #1a1a2e',
+        position: 'relative', zIndex: 40,
+        flexWrap: 'wrap',
+      }}>
+        {/* Status indicator */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{
+            width: 8, height: 8,
+            borderRadius: '50%',
+            background: isPlaying ? '#4FE8BA' : isPaused ? '#FCC364' : '#555',
+            boxShadow: isPlaying
+              ? '0 0 10px #4FE8BA'
+              : isPaused
+                ? '0 0 10px #FCC364'
+                : 'none',
+            animation: isPlaying ? 'pulse 1.2s infinite' : 'none',
+          }} />
+          <span style={{
+            fontFamily: 'var(--font-press-start), monospace',
+            fontSize: 10,
+            color: isPlaying ? '#4FE8BA' : isPaused ? '#FCC364' : '#666',
+            textShadow: isPlaying
+              ? '0 0 10px rgba(79,232,186,0.5)'
+              : isPaused
+                ? '0 0 10px rgba(252,195,100,0.4)'
+                : 'none',
+            letterSpacing: 1,
+          }}>
+            {isPlaying ? 'IN GAME' : isPaused ? 'PAUSED' : 'READY'}
           </span>
         </div>
 
-        <div className="w-px h-6 bg-gray-200" />
+        {/* Separator */}
+        <span style={{ width: 1, height: 22, background: '#1a1a30' }} />
 
         {/* Pause / Resume */}
         {canAct && (
-          isPaused
-            ? <Button variant="success" size="sm" onClick={onResume}>▶ 继续比赛</Button>
-            : <Button variant="warning" size="sm" onClick={onPause}>⏸ 暂停</Button>
+          <button
+            onClick={isPaused ? onResume : onPause}
+            style={{
+              padding: '6px 14px',
+              fontFamily: 'var(--font-press-start), monospace',
+              fontSize: 9,
+              letterSpacing: 1,
+              color: isPaused ? '#4FE8BA' : '#FCC364',
+              background: 'transparent',
+              border: `1px solid ${isPaused ? 'rgba(79,232,186,0.35)' : 'rgba(252,195,100,0.35)'}`,
+              cursor: 'pointer',
+              transition: 'all 0.15s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = isPaused
+                ? '0 0 12px rgba(79,232,186,0.35)'
+                : '0 0 12px rgba(252,195,100,0.35)'
+            }}
+            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none' }}
+          >
+            {isPaused ? '▶ RESUME' : '⏸ PAUSE'}
+          </button>
         )}
 
-        {/* Quit player buttons */}
+        {/* Quit player buttons — red by default */}
         {players.map((p) => (
-          <Button
+          <button
             key={p.id}
-            variant="ghost"
-            size="sm"
-            className="!border-gray-300 !text-text-main hover:!bg-danger-50 hover:!border-danger-300 hover:!text-danger-500"
             disabled={!canAct || p.finished}
             onClick={() => setQuitTarget(p.id)}
+            style={{
+              padding: '6px 14px',
+              fontFamily: 'var(--font-press-start), monospace',
+              fontSize: 9,
+              letterSpacing: 1,
+              color: canAct && !p.finished ? '#FF3B30' : '#552222',
+              background: canAct && !p.finished ? 'rgba(255,59,48,0.06)' : 'transparent',
+              border: canAct && !p.finished ? '1px solid rgba(255,59,48,0.3)' : '1px solid #2a1a1a',
+              cursor: canAct && !p.finished ? 'pointer' : 'default',
+              transition: 'all 0.15s',
+              opacity: canAct && !p.finished ? 1 : 0.35,
+            }}
+            onMouseEnter={(e) => {
+              if (!canAct || p.finished) return
+              e.currentTarget.style.borderColor = '#FF3B30'
+              e.currentTarget.style.background = 'rgba(255,59,48,0.12)'
+              e.currentTarget.style.boxShadow = '0 0 10px rgba(255,59,48,0.3)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(255,59,48,0.3)'
+              e.currentTarget.style.background = 'rgba(255,59,48,0.06)'
+              e.currentTarget.style.boxShadow = 'none'
+            }}
           >
-            🏳 {p.name}放弃
-          </Button>
+            {p.name} QUIT
+          </button>
         ))}
 
-        <div className="flex-1" />
+        {/* Spacer */}
+        <div style={{ flex: 1 }} />
 
-        <Button variant="ghost" size="sm" className="!border-gray-300 !text-text-main" onClick={() => setShowReturnModal(true)}>
-          ↩ 返回
-        </Button>
+        {/* Return button */}
+        <button
+          onClick={() => setShowReturnModal(true)}
+          style={{
+            padding: '6px 14px',
+            fontFamily: 'var(--font-press-start), monospace',
+            fontSize: 9,
+            letterSpacing: 1,
+            color: '#555',
+            background: 'transparent',
+            border: '1px solid #2a2a3a',
+            cursor: 'pointer',
+            transition: 'all 0.15s',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#666'
+            e.currentTarget.style.color = '#aaa'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#2a2a3a'
+            e.currentTarget.style.color = '#555'
+          }}
+        >
+          ← BACK
+        </button>
       </div>
 
-      {/* Quit confirmation */}
+      {/* Quit confirmation modal */}
       <Modal
         open={quitTarget !== null}
         title={`${players.find(p => p.id === quitTarget)?.name ?? ''} 放弃比赛`}
@@ -73,7 +162,7 @@ export default function RefereeToolbar({ status, players, onPause, onResume, onQ
         onCancel={() => setQuitTarget(null)}
       />
 
-      {/* Return confirmation */}
+      {/* Return confirmation modal */}
       <Modal
         open={showReturnModal}
         title="返回设置"
