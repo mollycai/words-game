@@ -19,9 +19,9 @@ const FLOATING_CHARS = [
 ]
 
 const FEATURES = [
-  { Icon: PixelGear, label: '设置规则', desc: '人数 & 单词数' },
-  { Icon: PixelDoc, label: '导入词汇', desc: '上传 Excel 表' },
-  { Icon: PixelPlay, label: '开始比赛', desc: '同屏竞技 PK' },
+  { Icon: PixelGear, label: '设置规则', desc: '人数 & 单词数', step: '01', color: '#8B83F0' },
+  { Icon: PixelDoc, label: '导入词汇', desc: '上传 Excel 表', step: '02', color: '#FCC364' },
+  { Icon: PixelPlay, label: '开始比赛', desc: '同屏竞技 PK', step: '03', color: '#4FE8BA' },
 ]
 
 export default function HomePage() {
@@ -77,25 +77,51 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Feature cards */}
-        <div className="grid grid-cols-3 gap-4 mb-12">
-          {FEATURES.map((step, i) => (
+        {/* Feature cards — Pixel Panel style */}
+        <div className="flex gap-3 justify-center mb-12 flex-wrap">
+          {FEATURES.map((step) => (
             <div
-              key={i}
-              className="rounded-2xl p-4"
+              key={step.step}
+              className="relative flex-1 min-w-[150px] max-w-[220px]"
               style={{
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                backdropFilter: 'blur(8px)',
+                background: 'linear-gradient(180deg, rgba(15,13,46,0.9), rgba(20,18,54,0.9))',
+                border: `2px solid ${step.color}30`,
+                padding: '28px 18px 22px',
+                textAlign: 'center',
+                boxShadow: `3px 3px 0 ${step.color}18, 0 0 20px ${step.color}10`,
               }}
             >
-              <div className="mb-2 flex justify-center">
-                <step.Icon size={32} />
+              {/* Pixel corner accents */}
+              <span style={{ position: 'absolute', top: -2, left: -2, width: 8, height: 8, background: step.color, display: 'block' }} />
+              <span style={{ position: 'absolute', top: -2, right: -2, width: 8, height: 8, background: step.color, display: 'block' }} />
+              <span style={{ position: 'absolute', bottom: -2, right: -2, width: 8, height: 8, background: step.color, display: 'block' }} />
+
+              {/* Step number — pixel style */}
+              <div style={{
+                fontFamily: '"Arial Black", Impact, sans-serif',
+                fontSize: 11, fontWeight: 900, color: step.color,
+                letterSpacing: 2, marginBottom: 14, opacity: 0.8,
+              }}>
+                [{step.step}]
               </div>
-              <div className="text-sm font-bold mb-0.5" style={{ color: '#F0EEFF' }}>
+
+              {/* Icon */}
+              <div className="flex justify-center mb-3">
+                <step.Icon size={38} />
+              </div>
+
+              {/* Title */}
+              <div style={{
+                fontFamily: '"Arial Black", Impact, sans-serif',
+                fontWeight: 900, fontSize: 14, color: step.color,
+                marginBottom: 6, letterSpacing: 1,
+                textShadow: `0 0 10px ${step.color}40`,
+              }}>
                 {step.label}
               </div>
-              <div className="text-xs" style={{ color: '#9996B0' }}>
+
+              {/* Description */}
+              <div style={{ fontSize: 12, color: '#9996B0', lineHeight: 1.5 }}>
                 {step.desc}
               </div>
             </div>
