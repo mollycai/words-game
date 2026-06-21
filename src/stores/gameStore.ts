@@ -4,15 +4,10 @@ import { pickWords, buildBlocks, checkMatch, remainingBlocks } from '@/lib/gameL
 
 const PLAYER_COLORS: Record<number, string> = { 1: '#4B3FD9', 2: '#FF3B30', 3: '#06D6A0' }
 
-interface SelectedBlock {
-  playerId: number
-  block: Block
-}
-
 interface GameStore {
   status: GameStatus
   players: PlayerState[]
-  selected: SelectedBlock | null
+  selected: Record<number, Block | null>
   countdownValue: number
   flashWrong: { playerId: number; blockIds: [string, string] } | null
 
@@ -31,7 +26,7 @@ interface GameStore {
 export const useGameStore = create<GameStore>((set, get) => ({
   status: 'idle',
   players: [],
-  selected: null,
+  selected: {},
   countdownValue: 3,
   flashWrong: null,
 
@@ -50,7 +45,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         quitTime: null,
       })
     }
-    set({ players, status: 'idle', countdownValue: 3, selected: null, flashWrong: null })
+    set({ players, status: 'idle', countdownValue: 3, selected: {}, flashWrong: null })
   },
 
   startCountdown: () => set({ status: 'countdown', countdownValue: 3 }),
@@ -79,12 +74,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (st.status !== 'playing') return
     if (block.status === 'matched') return
 
-    const prev = st.selected
+    const prev = st.selected[playerId] ?? null
 
     // Clicking the already-selected block: deselect
-    if (prev && prev.playerId === playerId && prev.block.id === block.id) {
+    if (prev && prev.id === block.id) {
       set((s) => ({
-        selected: null,
+        selected: { ...s.selected, [playerId]: null },
         players: s.players.map((p) =>
           p.id === playerId
             ? { ...p, blocks: p.blocks.map((b) => (b.id === block.id ? { ...b, status: 'normal' as const } : b)) }
@@ -94,10 +89,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return
     }
 
-    // First selection — highlight it
+    // First selection for this player — highlight it
     if (!prev) {
       set((s) => ({
-        selected: { playerId, block: { ...block, status: 'selected' } },
+        selected: { ...s.selected, [playerId]: { ...block, status: 'selected' } },
         players: s.players.map((p) =>
           p.id === playerId
             ? { ...p, blocks: p.blocks.map((b) => (b.id === block.id ? { ...b, status: 'selected' as const } : b)) }
@@ -107,19 +102,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return
     }
 
-    // Second selection — must be in same player area
-    if (prev.playerId !== playerId) return
-
-    const result = checkMatch(prev.block, block)
+    // Second selection for this player — check match
+    const result = checkMatch(prev, block)
 
     if (result === 'correct') {
       // Match! Mark both as matched
       set((s) => ({
-        selected: null,
+        selected: { ...s.selected, [playerId]: null },
         players: s.players.map((p) => {
           if (p.id !== playerId) return p
           const updated = p.blocks.map((b) => {
-            if (b.id === prev.block.id || b.id === block.id) return { ...b, status: 'matched' as const }
+            if (b.id === prev.id || b.id === block.id) return { ...b, status: 'matched' as const }
             return b
           })
           const allDone = remainingBlocks(updated) === 0
@@ -134,14 +127,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
     } else {
       // Wrong match — flash then reset
       set((s) => ({
-        selected: null,
-        flashWrong: { playerId, blockIds: [prev.block.id, block.id] },
+        selected: { ...s.selected, [playerId]: null },
+        flashWrong: { playerId, blockIds: [prev.id, block.id] },
         players: s.players.map((p) => {
           if (p.id !== playerId) return p
           return {
             ...p,
             blocks: p.blocks.map((b) => {
-              if (b.id === prev.block.id || b.id === block.id) return { ...b, status: 'wrong' as const }
+              if (b.id === prev.id || b.id === block.id) return { ...b, status: 'wrong' as const }
               return b
             }),
           }
@@ -173,5 +166,5 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   endGame: () => set({ status: 'finished' }),
 
-  reset: () => set({ status: 'idle', players: [], selected: null, countdownValue: 3, flashWrong: null }),
+  reset: () => set({ status: 'idle', players: [], selected: {}, countdownValue: 3, flashWrong: null }),
 }))
